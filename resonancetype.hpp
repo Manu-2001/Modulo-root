@@ -1,0 +1,24 @@
+#ifndef RESOUNCETYPE_HPP
+#define RESOUNCETYPE_HPP
+
+#include <iostream>
+#include <stdexcept>
+
+#include "particletype.hpp"
+
+class ResonanceType : public ParticleType {
+ public:
+  ResonanceType() = delete;
+  ResonanceType(std::string const&, double, int, double);
+
+  ~ResonanceType();
+
+  void Print() const;
+
+  double GetFWidth() const;
+
+ private:
+  double const fWidth;
+};
+
+#endif
