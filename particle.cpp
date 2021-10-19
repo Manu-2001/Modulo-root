@@ -91,8 +91,8 @@ void Particle::PrintParticleType() {
 unsigned int Particle::FindParticle(std::string const& particleName_) {
   auto const typePosition =
       std::find_if(fParticleType.begin(), fParticleType.end(),
-                   [&particleName_](ParticleTypePtr const& pointee) -> bool {
-                     return pointee.get()->GetParticleName() == particleName_;
+                   [&particleName_](ParticleTypePtr const& pointer) -> bool {
+                     return pointer.get()->GetParticleName() == particleName_;
                    });
 
   return typePosition - fParticleType.begin();
