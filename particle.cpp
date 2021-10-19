@@ -1,15 +1,15 @@
 #include "particle.hpp"
 
 // costruttore
-Particle::Particle(std::string const& name_,
-                   Impulse<double> momentum_ = Impulse<double>{})
+Particle::Particle(std::string const& name_, Impulse<double> const& momentum_)
     : typeIndex{}, momentum{momentum_} {
   auto const index = FindParticle(name_);
 
   if (index == fParticleType.size()) {
-    throw std::runtime_error{
-        "Particle::Particle(std::string, Impulse<double>) : Particle name not "
-        "found"};
+    std::cerr
+        << "\nParticle::Particle(std::string&, Impulse<double>&) : Particle "
+           "name not found\n";
+    return;
   }
 
   this->typeIndex = index;
@@ -21,9 +21,9 @@ double Particle::Energy() const {
   return std::hypot(mass, momentum.Norm());
 }
 
-double Particle::InvMass(Particle const& other) const {
-  return sqrt(pow(this->Energy() + other.Energy(), 2) -
-              pow((this->momentum).Norm() + other.momentum.Norm(), 2));
+double Particle::InvMass(Particle const& particle) const {
+  return sqrt(pow(this->Energy() + particle.Energy(), 2) -
+              pow((this->momentum).Norm() + particle.momentum.Norm(), 2));
 }
 
 void Particle::Print() const {
@@ -66,7 +66,7 @@ void Particle::SetMomentum(Impulse<double> const& momentum_) {
 // metodi statici
 void Particle::AddParticleType(std::string const& particleName_,
                                double const mass_, int const charge_,
-                               double const width_ = double{}) {
+                               double const width_) {
   if (FindParticle(particleName_) != fParticleType.size()) {
     return;
   }
@@ -89,12 +89,11 @@ void Particle::PrintParticleType() {
 }
 
 unsigned int Particle::FindParticle(std::string const& particleName_) {
-  for (auto first = fParticleType.begin(), last = fParticleType.end();
-       first != last; ++first) {
-    if ((*first)->GetParticleName() == particleName_) {
-      return first - fParticleType.begin();
-    }
-  }
+  auto const typePosition =
+      std::find_if(fParticleType.begin(), fParticleType.end(),
+                   [&particleName_](ParticleTypePtr const& pointee) -> bool {
+                     return pointee.get()->GetParticleName() == particleName_;
+                   });
 
-  return fParticleType.size();
+  return typePosition - fParticleType.begin();
 }

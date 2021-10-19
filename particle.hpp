@@ -1,6 +1,8 @@
 #ifndef PARTICLE_HPP
 #define PARTICLE_HPP
 
+#include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
@@ -12,10 +14,11 @@
 
 class Particle {
  public:
-  static void AddParticleType(std::string const&, double, int, double);
+  static void AddParticleType(std::string const&, double, int,
+                              double = double{});
   static void PrintParticleType();
 
-  Particle(std::string const&, Impulse<double>);
+  Particle(std::string const&, Impulse<double> const& = Impulse<double>{});
 
   double Energy() const;
   double InvMass(Particle const&) const;

@@ -15,7 +15,7 @@ class ResonanceType : public ParticleType {
 
   void Print() const;
 
-  double GetFWidth() const;
+  double GetWidth() const;
 
  private:
   double const fWidth;

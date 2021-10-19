@@ -22,4 +22,4 @@ void ResonanceType::Print() const {
 }
 
 // metodi get
-double ResonanceType::GetFWidth() const { return this->fWidth; }
+double ResonanceType::GetWidth() const { return this->fWidth; }
