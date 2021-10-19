@@ -82,9 +82,9 @@ void Particle::AddParticleType(std::string const& particleName_,
 }
 
 void Particle::PrintParticleType() {
-  for (auto const& ParticlePointe : fParticleType) {
+  for (auto const& ParticlePointer : fParticleType) {
     std::cout << '\n';
-    ParticlePointe->Print();
+    ParticlePointer->Print();
   }
 }
 
