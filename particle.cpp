@@ -1,9 +1,9 @@
 #include "particle.hpp"
 
 // costruttore
-Particle::Particle(std::string const& name_, Impulse<double> const& momentum_)
-    : typeIndex{}, momentum{momentum_} {
-  auto const index = FindParticle(name_);
+Particle::Particle(std::string const& name, Impulse<double> const& momentum)
+    : fTypeIndex{}, fMomentum{momentum} {
+  auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
     std::cerr
@@ -12,73 +12,72 @@ Particle::Particle(std::string const& name_, Impulse<double> const& momentum_)
     return;
   }
 
-  this->typeIndex = index;
+  this->fTypeIndex = index;
 }
 
 // metodi pubblici
 double Particle::Energy() const {
-  auto const mass = fParticleType[this->typeIndex]->GetMass();
-  return std::hypot(mass, momentum.Norm());
+  auto const mass = fParticleType[this->fTypeIndex]->GetMass();
+  return std::hypot(mass, fMomentum.Norm());
 }
 
 double Particle::InvMass(Particle const& particle) const {
   return sqrt(pow(this->Energy() + particle.Energy(), 2) -
-              pow((this->momentum).Norm() + particle.momentum.Norm(), 2));
+              pow((this->fMomentum).Norm() + particle.fMomentum.Norm(), 2));
 }
 
 void Particle::Print() const {
-  std::cout << "\nIndex: " << typeIndex
-            << "\n  Type: " << fParticleType[typeIndex]->GetParticleName()
-            << "\n  Momentum: P(" << momentum.x << ", " << momentum.y << ", "
-            << momentum.z << ") GeV/c\n";
+  std::cout << "\nIndex: " << fTypeIndex
+            << "\n  Type: " << fParticleType[fTypeIndex]->GetParticleName()
+            << "\n  Momentum: P(" << fMomentum.x << ", " << fMomentum.y << ", "
+            << fMomentum.z << ") GeV/c\n";
 }
 
 // metodi get
-Impulse<double> const& Particle::GetMomentum() const { return this->momentum; }
+Impulse<double> const& Particle::GetMomentum() const { return this->fMomentum; }
 
-unsigned int Particle::GetTypeIndex() const { return this->typeIndex; }
+unsigned int Particle::GetTypeIndex() const { return this->fTypeIndex; }
 
 // metodi set
-void Particle::SetTypeIndex(unsigned int const typeIndex_) {
-  if (typeIndex_ >= fParticleType.size()) {
+void Particle::SetTypeIndex(unsigned int const typeIndex) {
+  if (typeIndex >= fParticleType.size()) {
     throw std::runtime_error{
         "Particle::SetTypeIndex(unsigned int) : Invalid typeIndex"};
   }
 
-  this->typeIndex = typeIndex_;
+  this->fTypeIndex = typeIndex;
 }
 
-void Particle::SetTypeIndex(std::string const& name_) {
-  auto const index = FindParticle(name_);
+void Particle::SetTypeIndex(std::string const& name) {
+  auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
     throw std::runtime_error{
         "Particle::SetTypeIndex(std::string&) : Particle name not found"};
   }
 
-  this->typeIndex = index;
+  this->fTypeIndex = index;
 }
 
-void Particle::SetMomentum(Impulse<double> const& momentum_) {
-  this->momentum = momentum_;
+void Particle::SetMomentum(Impulse<double> const& momentum) {
+  this->fMomentum = momentum;
 }
 
 // metodi statici
-void Particle::AddParticleType(std::string const& particleName_,
-                               double const mass_, int const charge_,
-                               double const width_) {
-  if (FindParticle(particleName_) != fParticleType.size()) {
+void Particle::AddParticleType(std::string const& name, double const mass,
+                               int const charge, double const width) {
+  if (FindParticle(name) != fParticleType.size()) {
     return;
   }
 
-  if (width_ == double{}) {
-    fParticleType.push_back(std::make_unique<ParticleType>(
-        ParticleType{particleName_, mass_, charge_}));
+  if (width == double{}) {
+    fParticleType.push_back(
+        std::make_unique<ParticleType>(ParticleType{name, mass, charge}));
     return;
   }
 
   fParticleType.push_back(std::make_unique<ResonanceType>(
-      ResonanceType{particleName_, mass_, charge_, width_}));
+      ResonanceType{name, mass, charge, width}));
 }
 
 void Particle::PrintParticleType() {
@@ -88,11 +87,11 @@ void Particle::PrintParticleType() {
   }
 }
 
-unsigned int Particle::FindParticle(std::string const& particleName_) {
+unsigned int Particle::FindParticle(std::string const& name) {
   auto const typePosition =
       std::find_if(fParticleType.begin(), fParticleType.end(),
-                   [&particleName_](ParticleTypePtr const& pointer) -> bool {
-                     return pointer.get()->GetParticleName() == particleName_;
+                   [&name](ParticleTypePtr const& pointer) -> bool {
+                     return pointer.get()->GetParticleName() == name;
                    });
 
   return typePosition - fParticleType.begin();

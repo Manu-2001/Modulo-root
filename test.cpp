@@ -68,13 +68,15 @@ TEST_CASE("Particle") {
   {
     // test 3
     std::cout << "\n*** TESTING PARTICLE ***";
-    Particle::AddParticleType("electron", 9.11, -1, 0.);
-    Particle::AddParticleType("proton", 1.67, +1, 0.);
+    Particle::AddParticleType("electron", 9.11, -1);
+    Particle::AddParticleType("proton", 1.67, +1);
     Particle::AddParticleType("pione+", 2.14, +1, 3.2 * 10E-23);
     Particle::AddParticleType("pione-", 2.14, +1, 3.2 * 10E-23);
 
+    std::cout<<"\nTest costructor error:";
+    Particle try_("ndef");
     Particle electron1("electron", Impulse<double>{1.2, -2.5, 8.75});
-    Particle proton1("proton", Impulse<double>{});
+    Particle proton1("proton");
     Particle pion1("pione-", Impulse<double>{1.2, -2.5, 455.2});
 
     Particle rdef("electron", Impulse<double>{1.2, -2.5, 8.75});
@@ -84,13 +86,12 @@ TEST_CASE("Particle") {
     CHECK(rdef.GetTypeIndex() == 3);
 
     CHECK_THROWS(rdef.SetTypeIndex("neutron"));
-    CHECK_THROWS(rdef.SetTypeIndex(5));
-    CHECK_THROWS(rdef.SetTypeIndex(4));
+    CHECK_THROWS(rdef.SetTypeIndex("notdef"));
+    CHECK_THROWS(rdef.SetTypeIndex(15));
+    CHECK_THROWS(rdef.SetTypeIndex(9));
 
     rdef.SetMomentum(Impulse<double>{});
     CHECK(rdef.GetMomentum() == Impulse<double>{});
-
-    CHECK_THROWS(Particle{"ndef", Impulse<double>{}});
 
     CHECK(electron1.GetTypeIndex() == 0);
     CHECK(proton1.GetTypeIndex() == 1);

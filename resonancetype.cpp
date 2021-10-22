@@ -1,9 +1,9 @@
 #include "resonancetype.hpp"
 
 // costruttori
-ResonanceType::ResonanceType(std::string const& name_, double mass_,
-                             int charge_, double fWidth_)
-    : ParticleType(name_, mass_, charge_), fWidth{fWidth_} {
+ResonanceType::ResonanceType(std::string const& name, double mass, int charge,
+                             double width)
+    : ParticleType(name, mass, charge), fWidth{width} {
   if (fWidth <= 0.) {
     throw std::runtime_error{
         "Resonacetype::Resonancetype(std::string&, double, int, double) : "

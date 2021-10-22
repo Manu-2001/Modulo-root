@@ -38,8 +38,8 @@ class Particle {
 
   static inline std::vector<ParticleTypePtr> fParticleType{};
 
-  unsigned int typeIndex;
-  Impulse<double> momentum;
+  unsigned int fTypeIndex;
+  Impulse<double> fMomentum;
 };
 
 #endif

@@ -17,9 +17,9 @@ class ParticleType {
   int GetCharge() const;
 
  private:
-  std::string const particle_name;
-  double const mass;
-  int const charge;
+  std::string const fName;
+  double const fMass;
+  int const fCharge;
 };
 
 #endif
