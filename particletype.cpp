@@ -3,7 +3,7 @@
 // costruttore
 ParticleType::ParticleType(std::string const& name, double mass, int charge)
     : fName{name}, fMass{mass}, fCharge{charge} {
-  if (fMass <= 0.) {
+  if (fMass < 0.) {
     throw std::runtime_error{
         "Particletype::Particletype(std::string&, double, int) : Invalid "
         "inizialization"};
