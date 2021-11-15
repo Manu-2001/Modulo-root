@@ -31,8 +31,8 @@ int main() {
     TH1F* hTheta = new TH1F("Theta", "Theta", 1000, 0., M_PI);
     TH1F* hPhi = new TH1F("Phi", "Phi", 1000, 0., 2 * M_PI);
     TH1F* hImpulse = new TH1F("Impulse", "Momentum distribution", 1000, 0, 7);
-    TH1F* hTrasverslaImpulse = new TH1F(
-        "TrasverslaImpulse", "Trasversla momentum distribution", 1000, 0, 7);
+    TH1F* hTrasversalImpulse = new TH1F(
+        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 7);
     TH1F* hEnergy = new TH1F("Energy", "Particle energy", 1000, 0, 7);
     TH1F* hInvMass = new TH1F("InvMass", "Invariant Mass", 1000, 0, 5);
 
@@ -157,7 +157,7 @@ int main() {
         hTheta->Fill(theta);
         hPhi->Fill(phi);
         hImpulse->Fill(pNorm);
-        hTrasverslaImpulse->Fill(sqrt(P.x * P.x + P.y * P.y));
+        hTrasversalImpulse->Fill(sqrt(P.x * P.x + P.y * P.y));
       }  // fine ciclo for
 
       // doppio ciclo for per gli ultimi istogrammi, non avendo kaoni*
