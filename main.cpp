@@ -72,7 +72,7 @@ int main() {
     // iteratore all'ultima particella da inserire/inserita
     auto lastParticle = myParticleArray.end() - 20;
 
-    for (int event{}; event < 10E2; ++event) {
+    for (int event{}; event < 10E5; ++event) {
       lastParticle = myParticleArray.end() - 20;
 
       for (auto particle = myParticleArray.begin(); particle != lastParticle;
