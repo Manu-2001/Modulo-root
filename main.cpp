@@ -72,7 +72,7 @@ int main() {
     // iteratore all'ultima particella da inserire/inserita
     auto lastParticle = myParticleArray.end() - 20;
 
-    for (int event{} ; event < 10E5; ++event) {
+    for (int event{}; event < 10E5; ++event) {
       lastParticle = myParticleArray.end() - 20;
 
       for (auto particle = myParticleArray.begin(); particle != lastParticle;
@@ -195,8 +195,8 @@ int main() {
         }  // fine ciclo for
       }    // fine ciclo for
     }      // fine ciclo for
-  } catch (std::exception const &e) {
-    std::cerr << e.what() << '\n';
+  } catch (std::exception const& exceptionRaised) {
+    std::cerr << exceptionRaised.what() << '\n';
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "an unknown excwption was caught";

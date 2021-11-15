@@ -20,6 +20,8 @@ void ParticleType::Print() const {
             << "\n  Charge: " << this->fCharge << " e\n";
 }
 
+double ParticleType::GetWidth() const { return double{}; }
+
 // metodi get
 std::string const& ParticleType::GetParticleName() const { return this->fName; }
 

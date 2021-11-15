@@ -11,6 +11,7 @@ class ParticleType {
 
   virtual ~ParticleType();
   virtual void Print() const;
+  virtual double GetWidth() const;
 
   std::string const& GetParticleName() const;
   double GetMass() const;
