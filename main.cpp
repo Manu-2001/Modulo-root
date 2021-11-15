@@ -17,8 +17,8 @@ int main() {
     // tipi di partielle
     Particle::AddParticleType("pion+", 0.13957, +1);
     Particle::AddParticleType("pion-", 0.13957, -1);
-    Particle::AddParticleType("Kaon+", 0.49367, +1);
-    Particle::AddParticleType("Kaon-", 0.49367, -1);
+    Particle::AddParticleType("kaon+", 0.49367, +1);
+    Particle::AddParticleType("kaon-", 0.49367, -1);
     Particle::AddParticleType("proton", 0.93827, +1);
     Particle::AddParticleType("antiproton", 0.93827, -1);
     Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);
@@ -72,7 +72,7 @@ int main() {
     // iteratore all'ultima particella da inserire/inserita
     auto lastParticle = myParticleArray.end() - 20;
 
-    for (int event{}; event < 10E5; ++event) {
+    for (int event{}; event < 10E2; ++event) {
       lastParticle = myParticleArray.end() - 20;
 
       for (auto particle = myParticleArray.begin(); particle != lastParticle;
@@ -108,7 +108,7 @@ int main() {
           hParticleType->Fill(3);
           hEnergy->Fill(particle->Energy());
         } else if (result <= 0.945) {
-          particle->SetTypeIndex("proton+");
+          particle->SetTypeIndex("proton");
           hParticleType->Fill(4);
           hEnergy->Fill(particle->Energy());
         } else if (result <= 0.99) {
@@ -172,11 +172,9 @@ int main() {
 
           hInvMass->Fill(particle->InvMass(*it));
 
-          if (it->GetCharge() * pCharge > 0) {
-            hInvMassSameCharge->Fill(particle->InvMass(*it));
-          } else if (it->GetCharge() * pCharge < 0) {
-            hInvMassOppCharge->Fill(particle->InvMass(*it));
-          }
+          (it->GetCharge() * pCharge > 0)
+              ? hInvMassSameCharge->Fill(particle->InvMass(*it))
+              : hInvMassOppCharge->Fill(particle->InvMass(*it));
 
           if (pTypeIndex == 0) {
             if (itTypeIndex == 2) {
@@ -195,8 +193,9 @@ int main() {
         }  // fine ciclo for
       }    // fine ciclo for
     }      // fine ciclo for
-  } catch (std::exception const& exceptionRaised) {
-    std::cerr << exceptionRaised.what() << '\n';
+
+  } catch (std::exception const& Exception) {
+    std::cerr << Exception.what() << '\n';
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "an unknown excwption was caught";
