@@ -51,6 +51,13 @@ int main() {
     TH1F* hInvMassDecay =
         new TH1F("hInvMassDecay", "Invariant Mass Decay particle", 1000, 0, 5);
 
+    // array delle particelle 100 + 20
+    std::array<Particle, 120> myParticleArray({});
+
+    // ultimo elemento dell'array è il kaone* usato per i decaimenti
+    auto const kaon = myParticleArray.end() - 1;
+    kaon->SetTypeIndex("kaon*");
+
     // variabili usate per generare i valori random
     double phi{};
     double theta{};
@@ -66,8 +73,8 @@ int main() {
 
     int pCharge{};
 
-    // array delle particelle 100 + 20
-    std::array<Particle, 120> myParticleArray({});
+    // variabile per segnalare errori dovuti al decadimento
+    int typeError{};
 
     // iteratore all'ultima particella da inserire/inserita
     auto lastParticle = myParticleArray.end() - 20;
@@ -120,14 +127,12 @@ int main() {
           // saranno gli esiti del decadimento, 'setto' due
           // particelle e non una, quindi incrementa lastParticle
           ++lastParticle;
-          if (lastParticle == myParticleArray.end() - 1) {
+          if (lastParticle == kaon) {
             throw std::runtime_error{
                 "error in main() : myParticleArray is full"};
           }
 
-          auto kaon = myParticleArray.end() - 1;
           kaon->SetMomentum(P);
-          kaon->SetTypeIndex("kaon*");
 
           hParticleType->Fill(6);
           hEnergy->Fill(kaon->Energy());
@@ -144,7 +149,7 @@ int main() {
             particle->SetTypeIndex("kaon+");
           }
 
-          auto typeError = kaon->Decay2body(*particle, *(particle - 1));
+          typeError = kaon->Decay2body(*particle, *(particle - 1));
 
           if (typeError) {
             std::cerr << "\ntype error: " << typeError << ".\n";
@@ -182,7 +187,6 @@ int main() {
             } else if (itTypeIndex == 3) {
               hInvMassPpKm->Fill(particle->InvMass(*it));
             }
-
           } else if (pTypeIndex == 1) {
             if (itTypeIndex == 2) {
               hInvMassPmKp->Fill(particle->InvMass(*it));
@@ -190,6 +194,7 @@ int main() {
               hInvMassPmKm->Fill(particle->InvMass(*it));
             }
           }
+
         }  // fine ciclo for
       }    // fine ciclo for
     }      // fine ciclo for
