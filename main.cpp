@@ -2,6 +2,9 @@
 #include <cmath>
 #include <stdexcept>
 
+#include "TCanvas.h"
+#include "TH1F.h"
+#include "TRandom.h"
 #include "particle.hpp"
 #include "particletype.hpp"
 #include "point.hpp"
@@ -24,8 +27,11 @@ int main() {
     Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);
 
     // canvas e istogrammi
-    TCanvas* myCanvas = new TCanvas("Canvas", "Particle");
-    myCanvas->Divide(3, 3);
+    TCanvas* myInvCanvas = new TCanvas("InvCanvas", "Massa invariante");
+    myInvCanvas->Divide(4, 2);
+
+    TCanvas* myParCanvas = new TCanvas("ParCanvas", "Particle");
+    myParCanvas->Divide(3, 2);
 
     TH1F* hParticleType = new TH1F("Type", "Particle Types", 7, 0, 7);
     TH1F* hTheta = new TH1F("Theta", "Theta", 1000, 0., M_PI);
@@ -54,10 +60,6 @@ int main() {
     // array delle particelle 100 + 20
     std::array<Particle, 120> myParticleArray({});
 
-    // ultimo elemento dell'array è il kaone* usato per i decaimenti
-    auto const kaon = myParticleArray.end() - 1;
-    kaon->SetTypeIndex("kaon*");
-
     // variabili usate per generare i valori random
     double phi{};
     double theta{};
@@ -76,14 +78,23 @@ int main() {
     // variabile per segnalare errori dovuti al decadimento
     int typeError{};
 
-    // iteratore all'ultima particella da inserire/inserita
-    auto lastParticle = myParticleArray.end() - 20;
+    // iteratori di riferimento per non invocare metodi begin()
+    // e end() 10E5 volte nei for
+    auto const first = myParticleArray.begin();
+    auto const last = myParticleArray.end() - 20;
 
-    for (int event{}; event < 10E5; ++event) {
-      lastParticle = myParticleArray.end() - 20;
+    // iteratore kaon usato per i decadimenti
+    auto const kaon = myParticleArray.end() - 1;
+    kaon->SetTypeIndex("kaon*");
 
-      for (auto particle = myParticleArray.begin(); particle != lastParticle;
-           ++particle) {
+    // iteratore alla particlella 101esima dell'arrey
+    // usato per inserire 100 particelle
+    auto lastParticle = last;
+
+    for (int event{}; event != 10E5; ++event) {
+      lastParticle = last;
+
+      for (auto particle = first; particle != lastParticle; ++particle) {
         phi = gRandom->Uniform(0., 2 * M_PI);
         theta = gRandom->Uniform(0., M_PI);
         pNorm = gRandom->Exp(1.);
@@ -168,8 +179,7 @@ int main() {
 
       // doppio ciclo for per gli ultimi istogrammi, non avendo kaoni*
       // non devo ogni volta effettuare il controllo
-      for (auto particle = myParticleArray.begin(); particle != lastParticle;
-           ++particle) {
+      for (auto particle = first; particle != lastParticle; ++particle) {
         pTypeIndex = particle->GetTypeIndex();
         pCharge = particle->GetCharge();
 
@@ -199,6 +209,54 @@ int main() {
         }  // fine ciclo for
       }    // fine ciclo for
     }      // fine ciclo for
+
+    myParCanvas->cd(1);
+    hParticleType->Draw();
+
+    myParCanvas->cd(2);
+    hTheta->Draw("HIST, SAME");
+
+    myParCanvas->cd(3);
+    hPhi->Draw("HIST, SAME");
+
+    myParCanvas->cd(4);
+    hImpulse->Draw("HIST, SAME");
+
+    myParCanvas->cd(5);
+    hTrasversalImpulse->Draw("HIST, SAME");
+
+    myParCanvas->cd(6);
+    hEnergy->Draw("HIST, SAME");
+
+    myInvCanvas->cd(1);
+    hInvMass->Draw("HIST, SAME");
+
+    myInvCanvas->cd(2);
+    hInvMassOppCharge->Draw("HIST, SAME");
+
+    myInvCanvas->cd(3);
+    hInvMassSameCharge->Draw("HIST, SAME");
+
+    myInvCanvas->cd(4);
+    hInvMassPpKp->Draw("HIST, SAME");
+
+    myInvCanvas->cd(5);
+    hInvMassPpKm->Draw("HIST, SAME");
+
+    myInvCanvas->cd(6);
+    hInvMassPmKp->Draw("HIST, SAME");
+
+    myInvCanvas->cd(7);
+    hInvMassPmKm->Draw("HIST, SAME");
+
+    myInvCanvas->cd(8);
+    hInvMassDecay->Draw("HIST, SAME");
+
+    myParCanvas->Draw();
+    myInvCanvas->Draw();
+
+    myParCanvas->Print("Particle.pdf");
+    myInvCanvas->Print("InvMass.pdf");
 
   } catch (std::exception const& Exception) {
     std::cerr << Exception.what() << '\n';
