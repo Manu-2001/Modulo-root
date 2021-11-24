@@ -49,7 +49,6 @@ int main() {
         "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 5);
     TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0.1, 5);
     TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0.225, 5);
-
     TH1D* hInvMassOppCharge =
         new TH1D("InvMassOppCharge", "Invariant Mass of opposite charge", 1000,
                  0.225, 5);
