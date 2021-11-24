@@ -96,10 +96,11 @@ int main() {
     // indice kaone*
     kaon->SetTypeIndex("kaon*");
 
-    // inizio generazioni eventi
+    // inizio generazione eventi
     for (int event{}; event != 10E5; ++event) {
       lastParticle = last;
 
+      // riempimento array
       for (particle = first; particle != lastParticle; ++particle) {
         phi = gRandom->Uniform(0., 2 * M_PI);
         theta = gRandom->Uniform(0., M_PI);
