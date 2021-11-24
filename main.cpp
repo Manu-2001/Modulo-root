@@ -85,9 +85,9 @@ int main() {
     iterator lastParticle{};
     iterator particle{};
     iterator it{};
-    auto const first = myParticleArray.begin();
-    auto const last = myParticleArray.end() - 20;
-    auto const kaon = myParticleArray.end() - 1;
+    iterator const first = myParticleArray.begin();
+    iterator const last = myParticleArray.end() - 20;
+    iterator const kaon = myParticleArray.end() - 1;
 
     kaon->SetTypeIndex("kaon*");
 
@@ -186,7 +186,7 @@ int main() {
 
           (it->GetCharge() * pCharge > 0) ? hInvMassSameCharge->Fill(invMass)
                                           : hInvMassOppCharge->Fill(invMass);
-                                          
+
           if (particle->GetMass() != it->GetMass() && pTypeIndex < 4 &&
               itTypeIndex < 4) {
             if ((pTypeIndex == 0 && itTypeIndex == 2) ||
