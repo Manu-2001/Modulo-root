@@ -73,9 +73,9 @@ int main() {
 
     Point<double> P{};
 
-    // variabili di riferimento
-    unsigned int pTypeIndex{};
-    unsigned int itTypeIndex{};
+    // variabili di riferimento di particle e next (particle)
+    unsigned int pIndex{};
+    unsigned int npIndex{};
 
     int pCharge{};
     int typeError{};
@@ -85,7 +85,7 @@ int main() {
     // iteratori utili
     iterator lastParticle{};
     iterator particle{};
-    iterator it{};
+    iterator next{};
     iterator const first = myParticleArray.begin();
     iterator const last = myParticleArray.end() - 20;
     iterator const kaon = myParticleArray.end() - 1;
@@ -176,31 +176,31 @@ int main() {
       }  // fine ciclo for
 
       for (particle = first; particle != lastParticle; ++particle) {
-        pTypeIndex = particle->GetTypeIndex();
+        pIndex = particle->GetTypeIndex();
         pCharge = particle->GetCharge();
 
-        for (it = particle + 1; it != lastParticle; ++it) {
-          itTypeIndex = it->GetTypeIndex();
-          invMass = particle->InvMass(*it);
+        for (next = particle + 1; next != lastParticle; ++next) {
+          npIndex = next->GetTypeIndex();
+          invMass = particle->InvMass(*next);
 
           hInvMass->Fill(invMass);
 
-          (it->GetCharge() * pCharge > 0) ? hInvMassSameCharge->Fill(invMass)
-                                          : hInvMassOppCharge->Fill(invMass);
+          (next->GetCharge() * pCharge > 0) ? hInvMassSameCharge->Fill(invMass)
+                                            : hInvMassOppCharge->Fill(invMass);
 
-          if (particle->GetMass() != it->GetMass() && pTypeIndex < 4 &&
-              itTypeIndex < 4) {
-            if ((pTypeIndex == 0 && itTypeIndex == 2) ||
-                (itTypeIndex == 0 && pTypeIndex == 2)) {
+          if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
+              npIndex < 4) {
+            if ((pIndex == 0 && npIndex == 2) ||
+                (npIndex == 0 && pIndex == 2)) {
               hInvMassPpKp->Fill(invMass);
-            } else if ((pTypeIndex == 0 && itTypeIndex == 3) ||
-                       (itTypeIndex == 0 && pTypeIndex == 3)) {
+            } else if ((pIndex == 0 && npIndex == 3) ||
+                       (npIndex == 0 && pIndex == 3)) {
               hInvMassPpKm->Fill(invMass);
-            } else if ((pTypeIndex == 1 && itTypeIndex == 2) ||
-                       (itTypeIndex == 1 && pTypeIndex == 2)) {
+            } else if ((pIndex == 1 && npIndex == 2) ||
+                       (npIndex == 1 && pIndex == 2)) {
               hInvMassPmKp->Fill(invMass);
-            } else if ((pTypeIndex == 1 && itTypeIndex == 3) ||
-                       (itTypeIndex == 1 && pTypeIndex == 3)) {
+            } else if ((pIndex == 1 && npIndex == 3) ||
+                       (npIndex == 1 && pIndex == 3)) {
               hInvMassPmKm->Fill(invMass);
             }
           }
