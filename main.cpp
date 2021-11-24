@@ -46,8 +46,9 @@ int main() {
     TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0.1, 5);
     TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0.225, 5);
 
-    TH1D* hInvMassOppCharge = new TH1D(
-        "InvMassOppCharge", "Invariant Mass of opposite charge", 1000, 0.225, 5);
+    TH1D* hInvMassOppCharge =
+        new TH1D("InvMassOppCharge", "Invariant Mass of opposite charge", 1000,
+                 0.225, 5);
     TH1D* hInvMassSameCharge = new TH1D(
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0.225, 5);
     TH1D* hInvMassPpKp =
@@ -58,8 +59,8 @@ int main() {
         new TH1D("hInvMassPmKp", "Invariant Mass pione-/kaone+", 1000, 0.62, 3);
     TH1D* hInvMassPmKm =
         new TH1D("hInvMassPmKm", "Invariant Mass pione-/kaone-", 1000, 0.62, 3);
-    TH1D* hInvMassDecay =
-        new TH1D("hInvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.88);
+    TH1D* hInvMassDecay = new TH1D(
+        "hInvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.88);
 
     // array delle particelle 100 + 20
     std::array<Particle, 120> myParticleArray({});
