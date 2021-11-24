@@ -14,6 +14,7 @@
 #include "resonancetype.hpp"
 
 int main() {
+  // bloco try-catch
   try {
     R__LOAD_LIBRARY(point_cpp.so);
     R__LOAD_LIBRARY(particletype_cpp.so);
@@ -21,6 +22,8 @@ int main() {
     R__LOAD_LIBRARY(particle_cpp.so);
 
     using iterator = std::array<Particle, 120>::iterator;
+
+    /*  INIZIALIZZAZIONE VARIABILI/OGGETTI  */
 
     // tipi di partielle
     Particle::AddParticleType("pion+", 0.13957, +1);
@@ -31,12 +34,13 @@ int main() {
     Particle::AddParticleType("antiproton", 0.93827, -1);
     Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);
 
-    // canvas e istogrammi
+    // canvas
     TCanvas* ParCanvas = new TCanvas("ParticleCanvas", "Particle");
     TCanvas* InvCanvas = new TCanvas("InvMassCanvas", "Massa invariante");
     TCanvas* InvPKCanvas =
         new TCanvas("InvPioneKaoneCanvas", "Massa invariante pione kaone");
 
+    // istogrammi
     TH1D* hParticleType = new TH1D("Type", "Particle Types", 7, 0, 7);
     TH1D* hTheta = new TH1D("Theta", "Theta", 1000, 0., M_PI);
     TH1D* hPhi = new TH1D("Phi", "Phi", 1000, 0., 2 * M_PI);
@@ -62,27 +66,10 @@ int main() {
     TH1D* hInvMassDecay = new TH1D(
         "hInvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.88);
 
-    // array delle particelle 100 + 20
+    // array delle particelle
     std::array<Particle, 120> myParticleArray({});
 
-    // variabili per generare i valori random
-    double phi{};
-    double theta{};
-    double pNorm{};
-    double result{};
-
-    Point<double> P{};
-
-    // variabili di riferimento di particle e next (particle)
-    unsigned int pIndex{};
-    unsigned int npIndex{};
-
-    int pCharge{};
-    int typeError{};
-
-    double invMass{};
-
-    // iteratori utili
+    // iteratori
     iterator lastParticle{};
     iterator particle{};
     iterator next{};
@@ -90,8 +77,26 @@ int main() {
     iterator const last = myParticleArray.end() - 20;
     iterator const kaon = myParticleArray.end() - 1;
 
+    // indice di particle e next
+    unsigned int pIndex{};
+    unsigned int npIndex{};
+    int pCharge{};
+    int typeError{};
+
+    // variabili
+    double phi{};
+    double theta{};
+    double pNorm{};
+    double result{};
+    double invMass{};
+    Point<double> P{};
+
+    /*  FINE INIZIALIZZAZIONE VARIABILI/OGGETTI, ISTRUZIONI PROGRAMMA */
+
+    // indice kaone*
     kaon->SetTypeIndex("kaon*");
 
+    // inizio generazioni eventi
     for (int event{}; event != 10E5; ++event) {
       lastParticle = last;
 
@@ -108,6 +113,7 @@ int main() {
 
         result = gRandom->Rndm();
 
+        // indice, fill istogrammi energia e tipo
         if (result <= 0.4) {
           particle->SetTypeIndex("pion+");
           hParticleType->Fill(0);
@@ -133,9 +139,8 @@ int main() {
           hParticleType->Fill(5);
           hEnergy->Fill(particle->Energy());
         } else {
-          // la particlella puntata da particle e la successiva
-          // saranno gli esiti del decadimento, 'setto' due
-          // particelle e non una, quindi incrementa lastParticle
+          // particle e particle+1 saranno gli esiti del decadimento
+          // incremento last particle per generare sempre 100 particelle
           ++lastParticle;
           if (lastParticle == kaon) {
             throw std::runtime_error{
@@ -165,15 +170,16 @@ int main() {
             std::cerr << "\ntype error: " << typeError << ".\n";
           }
 
+          // fill istogramma massa invariante particelle decadute
           hInvMassDecay->Fill(particle->InvMass(*(particle - 1)));
         }
 
-        // fill istogrammi
+        // fill istogrammi proprietà geometriche e impulso
         hTheta->Fill(theta);
         hPhi->Fill(phi);
         hImpulse->Fill(pNorm);
         hTrasversalImpulse->Fill(sqrt(P.x * P.x + P.y * P.y));
-      }  // fine ciclo for
+      }  // fine ciclo for, riempimento array completato
 
       for (particle = first; particle != lastParticle; ++particle) {
         pIndex = particle->GetTypeIndex();
@@ -185,9 +191,11 @@ int main() {
 
           hInvMass->Fill(invMass);
 
+          // fill istogrammi carica discorde e concorde
           (next->GetCharge() * pCharge > 0) ? hInvMassSameCharge->Fill(invMass)
                                             : hInvMassOppCharge->Fill(invMass);
 
+          // fill istogrammi invMass pione/kaone
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
               npIndex < 4) {
             if ((pIndex == 0 && npIndex == 2) ||
@@ -207,7 +215,10 @@ int main() {
 
         }  // fine ciclo for
       }    // fine ciclo for
-    }      // fine ciclo for
+
+    }  // fine ciclo for eventi
+
+    /*  STAMPA E SALVATAGGIO DEI DATI */
 
     ParCanvas->Divide(3, 2);
     InvCanvas->Divide(2, 2);
@@ -262,11 +273,12 @@ int main() {
     InvCanvas->Print("InvMass.C");
     InvPKCanvas->Print("InvPKMass.C");
 
+    /*  GESTIONE ERRORI E FINE PROGRAMMA  */
   } catch (std::exception const& Exception) {
     std::cerr << Exception.what() << '\n';
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "an unknown excwption was caught";
     return EXIT_FAILURE;
-  }
+  }  // fine blocco try-catch
 }
