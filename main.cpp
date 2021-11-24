@@ -23,8 +23,6 @@ int main() {
 
     using iterator = std::array<Particle, 120>::iterator;
 
-    /*  INIZIALIZZAZIONE VARIABILI/OGGETTI  */
-
     // tipi di partielle
     Particle::AddParticleType("pion+", 0.13957, +1);
     Particle::AddParticleType("pion-", 0.13957, -1);
@@ -33,6 +31,8 @@ int main() {
     Particle::AddParticleType("proton", 0.93827, +1);
     Particle::AddParticleType("antiproton", 0.93827, -1);
     Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);
+
+    /*  INIZIALIZZAZIONE VARIABILI/OGGETTI  */
 
     // canvas
     TCanvas* ParCanvas = new TCanvas("ParticleCanvas", "Particle");
