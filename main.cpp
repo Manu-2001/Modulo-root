@@ -3,8 +3,11 @@
 #include <stdexcept>
 
 #include "TCanvas.h"
-#include "TH1F.h"
+#include "TFile.h"
+#include "TH1D.h"
+#include "TROOT.h"
 #include "TRandom.h"
+#include "TStyle.h"
 #include "particle.hpp"
 #include "particletype.hpp"
 #include "point.hpp"
@@ -17,6 +20,8 @@ int main() {
     R__LOAD_LIBRARY(resonancetype_cpp.so);
     R__LOAD_LIBRARY(particle_cpp.so);
 
+    using iterator = std::array<Particle, 120>::iterator;
+
     // tipi di partielle
     Particle::AddParticleType("pion+", 0.13957, +1);
     Particle::AddParticleType("pion-", 0.13957, -1);
@@ -27,40 +32,39 @@ int main() {
     Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);
 
     // canvas e istogrammi
-    TCanvas* myInvCanvas = new TCanvas("InvCanvas", "Massa invariante");
-    myInvCanvas->Divide(4, 2);
+    TCanvas* ParCanvas = new TCanvas("ParticleCanvas", "Particle");
+    TCanvas* InvCanvas = new TCanvas("InvMassCanvas", "Massa invariante");
+    TCanvas* InvPKCanvas =
+        new TCanvas("InvPioneKaoneCanvas", "Massa invariante pione kaone");
 
-    TCanvas* myParCanvas = new TCanvas("ParCanvas", "Particle");
-    myParCanvas->Divide(3, 2);
+    TH1D* hParticleType = new TH1D("Type", "Particle Types", 7, 0, 7);
+    TH1D* hTheta = new TH1D("Theta", "Theta", 1000, 0., M_PI);
+    TH1D* hPhi = new TH1D("Phi", "Phi", 1000, 0., 2 * M_PI);
+    TH1D* hImpulse = new TH1D("Impulse", "Momentum distribution", 1000, 0, 5);
+    TH1D* hTrasversalImpulse = new TH1D(
+        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 5);
+    TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0.1, 5);
+    TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0.225, 5);
 
-    TH1F* hParticleType = new TH1F("Type", "Particle Types", 7, 0, 7);
-    TH1F* hTheta = new TH1F("Theta", "Theta", 1000, 0., M_PI);
-    TH1F* hPhi = new TH1F("Phi", "Phi", 1000, 0., 2 * M_PI);
-    TH1F* hImpulse = new TH1F("Impulse", "Momentum distribution", 1000, 0, 7);
-    TH1F* hTrasversalImpulse = new TH1F(
-        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 7);
-    TH1F* hEnergy = new TH1F("Energy", "Particle energy", 1000, 0, 7);
-    TH1F* hInvMass = new TH1F("InvMass", "Invariant Mass", 1000, 0, 5);
-
-    TH1F* hInvMassOppCharge = new TH1F(
-        "InvMassOppCharge", "Invariant Mass of opposite charge", 1000, 0, 5);
-    TH1F* hInvMassSameCharge = new TH1F(
-        "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0, 5);
-    TH1F* hInvMassPpKp =
-        new TH1F("InvMassPpK", "Invariant Mass pione+/kaone+", 1000, 0, 5);
-    TH1F* hInvMassPpKm =
-        new TH1F("hInvMassPpKm", "Invariant Mass pione+/kaone-", 1000, 0, 5);
-    TH1F* hInvMassPmKp =
-        new TH1F("hInvMassPmKp", "Invariant Mass pione-/kaone+", 1000, 0, 5);
-    TH1F* hInvMassPmKm =
-        new TH1F("hInvMassPmKm", "Invariant Mass pione-/kaone-", 1000, 0, 5);
-    TH1F* hInvMassDecay =
-        new TH1F("hInvMassDecay", "Invariant Mass Decay particle", 1000, 0, 5);
+    TH1D* hInvMassOppCharge = new TH1D(
+        "InvMassOppCharge", "Invariant Mass of opposite charge", 1000, 0.225, 5);
+    TH1D* hInvMassSameCharge = new TH1D(
+        "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0.225, 5);
+    TH1D* hInvMassPpKp =
+        new TH1D("InvMassPpK", "Invariant Mass pione+/kaone+", 1000, 0.62, 3);
+    TH1D* hInvMassPpKm =
+        new TH1D("hInvMassPpKm", "Invariant Mass pione+/kaone-", 1000, 0.62, 3);
+    TH1D* hInvMassPmKp =
+        new TH1D("hInvMassPmKp", "Invariant Mass pione-/kaone+", 1000, 0.62, 3);
+    TH1D* hInvMassPmKm =
+        new TH1D("hInvMassPmKm", "Invariant Mass pione-/kaone-", 1000, 0.62, 3);
+    TH1D* hInvMassDecay =
+        new TH1D("hInvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.88);
 
     // array delle particelle 100 + 20
     std::array<Particle, 120> myParticleArray({});
 
-    // variabili usate per generare i valori random
+    // variabili per generare i valori random
     double phi{};
     double theta{};
     double pNorm{};
@@ -68,33 +72,29 @@ int main() {
 
     Point<double> P{};
 
-    // variabili usate negli ultimi cicli for annidati
-    // per tenere salvati indici e cariche
+    // variabili di riferimento
     unsigned int pTypeIndex{};
     unsigned int itTypeIndex{};
 
     int pCharge{};
-
-    // variabile per segnalare errori dovuti al decadimento
     int typeError{};
 
-    // iteratori di riferimento per non invocare metodi begin()
-    // e end() 10E5 volte nei for
+    double invMass{};
+
+    // iteratori utili
+    iterator lastParticle{};
+    iterator particle{};
+    iterator it{};
     auto const first = myParticleArray.begin();
     auto const last = myParticleArray.end() - 20;
-
-    // iteratore kaon usato per i decadimenti
     auto const kaon = myParticleArray.end() - 1;
-    kaon->SetTypeIndex("kaon*");
 
-    // iteratore alla particlella 101esima dell'arrey
-    // usato per inserire 100 particelle
-    auto lastParticle = last;
+    kaon->SetTypeIndex("kaon*");
 
     for (int event{}; event != 10E5; ++event) {
       lastParticle = last;
 
-      for (auto particle = first; particle != lastParticle; ++particle) {
+      for (particle = first; particle != lastParticle; ++particle) {
         phi = gRandom->Uniform(0., 2 * M_PI);
         theta = gRandom->Uniform(0., M_PI);
         pNorm = gRandom->Exp(1.);
@@ -108,9 +108,6 @@ int main() {
         result = gRandom->Rndm();
 
         if (result <= 0.4) {
-          // ho deciso di fare la fill di questi due
-          // instogrammi qui per via dei kaoni* e per
-          // risparmiare tempo sul primo
           particle->SetTypeIndex("pion+");
           hParticleType->Fill(0);
           hEnergy->Fill(particle->Energy());
@@ -151,7 +148,7 @@ int main() {
 
           result = gRandom->Rndm();
 
-          if (result <= 0.5) {
+          if (result < 0.5) {
             particle->SetTypeIndex("pion+");
             ++particle;
             particle->SetTypeIndex("kaon-");
@@ -170,39 +167,40 @@ int main() {
           hInvMassDecay->Fill(particle->InvMass(*(particle - 1)));
         }
 
-        // fill degli istogrammi, indipendenti da particle
+        // fill istogrammi
         hTheta->Fill(theta);
         hPhi->Fill(phi);
         hImpulse->Fill(pNorm);
         hTrasversalImpulse->Fill(sqrt(P.x * P.x + P.y * P.y));
       }  // fine ciclo for
 
-      // doppio ciclo for per gli ultimi istogrammi, non avendo kaoni*
-      // non devo ogni volta effettuare il controllo
-      for (auto particle = first; particle != lastParticle; ++particle) {
+      for (particle = first; particle != lastParticle; ++particle) {
         pTypeIndex = particle->GetTypeIndex();
         pCharge = particle->GetCharge();
 
-        for (auto it = particle + 1; it != lastParticle; ++it) {
+        for (it = particle + 1; it != lastParticle; ++it) {
           itTypeIndex = it->GetTypeIndex();
+          invMass = particle->InvMass(*it);
 
-          hInvMass->Fill(particle->InvMass(*it));
+          hInvMass->Fill(invMass);
 
-          (it->GetCharge() * pCharge > 0)
-              ? hInvMassSameCharge->Fill(particle->InvMass(*it))
-              : hInvMassOppCharge->Fill(particle->InvMass(*it));
-
-          if (pTypeIndex == 0) {
-            if (itTypeIndex == 2) {
-              hInvMassPpKp->Fill(particle->InvMass(*it));
-            } else if (itTypeIndex == 3) {
-              hInvMassPpKm->Fill(particle->InvMass(*it));
-            }
-          } else if (pTypeIndex == 1) {
-            if (itTypeIndex == 2) {
-              hInvMassPmKp->Fill(particle->InvMass(*it));
-            } else if (itTypeIndex == 3) {
-              hInvMassPmKm->Fill(particle->InvMass(*it));
+          (it->GetCharge() * pCharge > 0) ? hInvMassSameCharge->Fill(invMass)
+                                          : hInvMassOppCharge->Fill(invMass);
+                                          
+          if (particle->GetMass() != it->GetMass() && pTypeIndex < 4 &&
+              itTypeIndex < 4) {
+            if ((pTypeIndex == 0 && itTypeIndex == 2) ||
+                (itTypeIndex == 0 && pTypeIndex == 2)) {
+              hInvMassPpKp->Fill(invMass);
+            } else if ((pTypeIndex == 0 && itTypeIndex == 3) ||
+                       (itTypeIndex == 0 && pTypeIndex == 3)) {
+              hInvMassPpKm->Fill(invMass);
+            } else if ((pTypeIndex == 1 && itTypeIndex == 2) ||
+                       (itTypeIndex == 1 && pTypeIndex == 2)) {
+              hInvMassPmKp->Fill(invMass);
+            } else if ((pTypeIndex == 1 && itTypeIndex == 3) ||
+                       (itTypeIndex == 1 && pTypeIndex == 3)) {
+              hInvMassPmKm->Fill(invMass);
             }
           }
 
@@ -210,53 +208,58 @@ int main() {
       }    // fine ciclo for
     }      // fine ciclo for
 
-    myParCanvas->cd(1);
+    ParCanvas->Divide(3, 2);
+    InvCanvas->Divide(2, 2);
+    InvPKCanvas->Divide(2, 2);
+
+    gStyle->SetOptStat(112210);
+
+    ParCanvas->cd(1);
     hParticleType->Draw();
+    ParCanvas->cd(2);
+    hTheta->Draw();
+    ParCanvas->cd(3);
+    hPhi->Draw();
+    ParCanvas->cd(4);
+    hImpulse->Draw();
+    ParCanvas->cd(5);
+    hTrasversalImpulse->Draw();
+    ParCanvas->cd(6);
+    hEnergy->Draw();
 
-    myParCanvas->cd(2);
-    hTheta->Draw("HIST, SAME");
+    InvCanvas->cd(1);
+    hInvMass->Draw();
+    InvCanvas->cd(2);
+    hInvMassOppCharge->Draw();
+    InvCanvas->cd(3);
+    hInvMassSameCharge->Draw();
+    InvCanvas->cd(4);
+    hInvMassDecay->Draw();
 
-    myParCanvas->cd(3);
-    hPhi->Draw("HIST, SAME");
+    InvPKCanvas->cd(1);
+    hInvMassPpKp->Draw();
+    InvPKCanvas->cd(2);
+    hInvMassPpKm->Draw();
+    InvPKCanvas->cd(3);
+    hInvMassPmKp->Draw();
+    InvPKCanvas->cd(4);
+    hInvMassPmKm->Draw();
 
-    myParCanvas->cd(4);
-    hImpulse->Draw("HIST, SAME");
+    ParCanvas->Draw();
+    InvCanvas->Draw();
+    InvPKCanvas->Draw();
 
-    myParCanvas->cd(5);
-    hTrasversalImpulse->Draw("HIST, SAME");
+    ParCanvas->Print("Particle.pdf");
+    InvCanvas->Print("InvMass.pdf");
+    InvPKCanvas->Print("InvPKMass.pdf");
 
-    myParCanvas->cd(6);
-    hEnergy->Draw("HIST, SAME");
+    ParCanvas->Print("Particle.root");
+    InvCanvas->Print("InvMass.root");
+    InvPKCanvas->Print("InvPKMass.root");
 
-    myInvCanvas->cd(1);
-    hInvMass->Draw("HIST, SAME");
-
-    myInvCanvas->cd(2);
-    hInvMassOppCharge->Draw("HIST, SAME");
-
-    myInvCanvas->cd(3);
-    hInvMassSameCharge->Draw("HIST, SAME");
-
-    myInvCanvas->cd(4);
-    hInvMassPpKp->Draw("HIST, SAME");
-
-    myInvCanvas->cd(5);
-    hInvMassPpKm->Draw("HIST, SAME");
-
-    myInvCanvas->cd(6);
-    hInvMassPmKp->Draw("HIST, SAME");
-
-    myInvCanvas->cd(7);
-    hInvMassPmKm->Draw("HIST, SAME");
-
-    myInvCanvas->cd(8);
-    hInvMassDecay->Draw("HIST, SAME");
-
-    myParCanvas->Draw();
-    myInvCanvas->Draw();
-
-    myParCanvas->Print("Particle.pdf");
-    myInvCanvas->Print("InvMass.pdf");
+    ParCanvas->Print("Particle.C");
+    InvCanvas->Print("InvMass.C");
+    InvPKCanvas->Print("InvPKMass.C");
 
   } catch (std::exception const& Exception) {
     std::cerr << Exception.what() << '\n';
