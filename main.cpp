@@ -196,7 +196,7 @@ int main() {
           (next->GetCharge() * pCharge > 0) ? hInvMassSameCharge->Fill(invMass)
                                             : hInvMassOppCharge->Fill(invMass);
 
-          // fill istogrammi invMass pione/kaone
+          // fill istogrammi massa invariante pione/kaone
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
               npIndex < 4) {
             if ((pIndex == 0 && npIndex == 2) ||
