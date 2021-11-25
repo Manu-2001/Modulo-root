@@ -50,7 +50,7 @@ int main() {
     TH1D* hInvMassSameCharge = new TH1D(
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0.225, 5);
     TH1D* hInvMassPpKp =
-        new TH1D("InvMassPpK", "Invariant Mass pione+/kaone+", 1000, 0.62, 3);
+        new TH1D("InvMassPpKp", "Invariant Mass pione+/kaone+", 1000, 0.62, 3);
     TH1D* hInvMassPpKm =
         new TH1D("InvMassPpKm", "Invariant Mass pione+/kaone-", 1000, 0.62, 3);
     TH1D* hInvMassPmKp =

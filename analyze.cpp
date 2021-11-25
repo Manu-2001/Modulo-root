@@ -8,7 +8,7 @@ void analyze() {
   TFile* hFile = new TFile("histogram.root", "READ");
 
   TH1D* particleType = (TH1D*)hFile->Get("ParticleType");
-  TH1D* pheta = (TH1D*)hFile->Get("Theta");
+  TH1D* theta = (TH1D*)hFile->Get("Theta");
   TH1D* phi = (TH1D*)hFile->Get("Phi");
   TH1D* impulse = (TH1D*)hFile->Get("Impulse");
   TH1D* trasversalImpulse = (TH1D*)hFile->Get("TrasversalImpulse");
@@ -16,7 +16,7 @@ void analyze() {
   TH1D* invMass = (TH1D*)hFile->Get("InvMass");
   TH1D* invMassOppCharge = (TH1D*)hFile->Get("InvMassOppCharge");
   TH1D* invMassSameCharge = (TH1D*)hFile->Get("InvMassSameCharge");
-  TH1D* invMassPpKp = (TH1D*)hFile->Get("InvMassPpKp");
+  TH1D* invMassPpKp = (TH1D*)hFile->Get("InvMassPpK");
   TH1D* invMassPpKm = (TH1D*)hFile->Get("InvMassPpKm");
   TH1D* invMassPmKp = (TH1D*)hFile->Get("InvMassPmKp");
   TH1D* invMassPmKm = (TH1D*)hFile->Get("InvMassPmKm");
