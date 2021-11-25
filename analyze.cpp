@@ -5,22 +5,22 @@
 #include "TStyle.h"
 
 void analyze() {
-  TFile* myFile = new TFile("histogram.root", "READ");
+  TFile* hFile = new TFile("histogram.root", "WRITE");
 
-  TH1D* ParticleType = (TH1D*)myFile->Get("hParticleType");
-  TH1D* Theta = (TH1D*)myFile->Get("hTheta");
-  TH1D* Phi = (TH1D*)myFile->Get("hPhi");
-  TH1D* Impulse = (TH1D*)myFile->Get("hImpulse");
-  TH1D* TrasversalImpulse = (TH1D*)myFile->Get("hTrasversalImpulse");
-  TH1D* Energy = (TH1D*)myFile->Get("hEnergy");
-  TH1D* InvMass = (TH1D*)myFile->Get("hInvMass");
-  TH1D* InvMassOppCharge = (TH1D*)myFile->Get("hInvMassOppCharge");
-  TH1D* InvMassSameCharge = (TH1D*)myFile->Get("hInvMassSameCharge");
-  TH1D* InvMassPpKp = (TH1D*)myFile->Get("hInvMassPpKp");
-  TH1D* InvMassPpKm = (TH1D*)myFile->Get("hInvMassPpKm");
-  TH1D* InvMassPmKp = (TH1D*)myFile->Get("hInvMassPmKp");
-  TH1D* InvMassPmKm = (TH1D*)myFile->Get("hInvMassPmKm");
-  TH1D* InvMassDecay = (TH1D*)myFile->Get("hInvMassDecay");
+  TH1D* ParticleType = (TH1D*)hFile->Get("hParticleType");
+  TH1D* Theta = (TH1D*)hFile->Get("hTheta");
+  TH1D* Phi = (TH1D*)hFile->Get("hPhi");
+  TH1D* Impulse = (TH1D*)hFile->Get("hImpulse");
+  TH1D* TrasversalImpulse = (TH1D*)hFile->Get("hTrasversalImpulse");
+  TH1D* Energy = (TH1D*)hFile->Get("hEnergy");
+  TH1D* InvMass = (TH1D*)hFile->Get("hInvMass");
+  TH1D* InvMassOppCharge = (TH1D*)hFile->Get("hInvMassOppCharge");
+  TH1D* InvMassSameCharge = (TH1D*)hFile->Get("hInvMassSameCharge");
+  TH1D* InvMassPpKp = (TH1D*)hFile->Get("hInvMassPpKp");
+  TH1D* InvMassPpKm = (TH1D*)hFile->Get("hInvMassPpKm");
+  TH1D* InvMassPmKp = (TH1D*)hFile->Get("hInvMassPmKp");
+  TH1D* InvMassPmKm = (TH1D*)hFile->Get("hInvMassPmKm");
+  TH1D* InvMassDecay = (TH1D*)hFile->Get("hInvMassDecay");
 
   // canvas
   TCanvas* ParCanvas = new TCanvas("ParticleCanvas", "Particle");
@@ -65,7 +65,13 @@ void analyze() {
   InvPKCanvas->cd(4);
   InvMassPmKm->DrawCopy();
 
+  ParCanvas->Draw();
+  InvCanvas->Draw();
+  InvPKCanvas->Draw();
+
   ParCanvas->Print("Particle.pdf");
   InvCanvas->Print("InvMass.pdf");
   InvPKCanvas->Print("InvPKMass.pdf");
+
+  hFile->Close();
 }
