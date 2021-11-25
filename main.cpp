@@ -2,19 +2,17 @@
 #include <cmath>
 #include <stdexcept>
 
-#include "TCanvas.h"
 #include "TFile.h"
 #include "TH1D.h"
 #include "TROOT.h"
 #include "TRandom.h"
-#include "TStyle.h"
 #include "particle.hpp"
 #include "particletype.hpp"
 #include "point.hpp"
 #include "resonancetype.hpp"
 
 int main() {
-  // blocco try-catch
+  // bloco try-catch
   try {
     R__LOAD_LIBRARY(point_cpp.so);
     R__LOAD_LIBRARY(particletype_cpp.so);
@@ -34,20 +32,17 @@ int main() {
 
     /*  INIZIALIZZAZIONE VARIABILI/OGGETTI  */
 
-    // canvas
-    TCanvas* ParCanvas = new TCanvas("ParticleCanvas", "Particle");
-    TCanvas* InvCanvas = new TCanvas("InvMassCanvas", "Massa invariante");
-    TCanvas* InvPKCanvas =
-        new TCanvas("InvPioneKaoneCanvas", "Massa invariante pione kaone");
+    // file
+    TFile* myFile = new TFile("histogram", "CREATE");
 
     // istogrammi
     TH1D* hParticleType = new TH1D("Type", "Particle Types", 7, 0, 7);
     TH1D* hTheta = new TH1D("Theta", "Theta", 1000, 0., M_PI);
     TH1D* hPhi = new TH1D("Phi", "Phi", 1000, 0., 2 * M_PI);
-    TH1D* hImpulse = new TH1D("Impulse", "Momentum distribution", 1000, 0, 5);
+    TH1D* hImpulse = new TH1D("Impulse", "Momentum distribution", 1000, 0, 8);
     TH1D* hTrasversalImpulse = new TH1D(
-        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 5);
-    TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0.1, 5);
+        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 8);
+    TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0.1, 8);
     TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0.225, 5);
     TH1D* hInvMassOppCharge =
         new TH1D("InvMassOppCharge", "Invariant Mass of opposite charge", 1000,
@@ -63,7 +58,7 @@ int main() {
     TH1D* hInvMassPmKm =
         new TH1D("hInvMassPmKm", "Invariant Mass pione-/kaone-", 1000, 0.62, 3);
     TH1D* hInvMassDecay = new TH1D(
-        "hInvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.88);
+        "hInvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.8);
 
     // array delle particelle
     std::array<Particle, 120> myParticleArray({});
@@ -167,7 +162,7 @@ int main() {
           typeError = kaon->Decay2body(*particle, *(particle - 1));
 
           if (typeError) {
-            std::cerr << "\ntype error: " << typeError << ".\n";
+            std::cerr << "type error: " << typeError << ".\n";
           }
 
           // fill istogramma massa invariante particelle decadute
@@ -218,60 +213,14 @@ int main() {
 
     }  // fine ciclo for eventi
 
-    /*  STAMPA E SALVATAGGIO DEI DATI */
+    /*  SALVATAGGIO ISTOGRAMMI */
+    typeError = myFile->TFile::Write();
 
-    ParCanvas->Divide(3, 2);
-    InvCanvas->Divide(2, 2);
-    InvPKCanvas->Divide(2, 2);
+    if (typeError) {
+      std::cerr << "TFile::Write(): " << typeError << ".\n";
+    }
 
-    gStyle->SetOptStat(112210);
-
-    ParCanvas->cd(1);
-    hParticleType->Draw();
-    ParCanvas->cd(2);
-    hTheta->Draw();
-    ParCanvas->cd(3);
-    hPhi->Draw();
-    ParCanvas->cd(4);
-    hImpulse->Draw();
-    ParCanvas->cd(5);
-    hTrasversalImpulse->Draw();
-    ParCanvas->cd(6);
-    hEnergy->Draw();
-
-    InvCanvas->cd(1);
-    hInvMass->Draw();
-    InvCanvas->cd(2);
-    hInvMassOppCharge->Draw();
-    InvCanvas->cd(3);
-    hInvMassSameCharge->Draw();
-    InvCanvas->cd(4);
-    hInvMassDecay->Draw();
-
-    InvPKCanvas->cd(1);
-    hInvMassPpKp->Draw();
-    InvPKCanvas->cd(2);
-    hInvMassPpKm->Draw();
-    InvPKCanvas->cd(3);
-    hInvMassPmKp->Draw();
-    InvPKCanvas->cd(4);
-    hInvMassPmKm->Draw();
-
-    ParCanvas->Draw();
-    InvCanvas->Draw();
-    InvPKCanvas->Draw();
-
-    ParCanvas->Print("Particle.pdf");
-    InvCanvas->Print("InvMass.pdf");
-    InvPKCanvas->Print("InvPKMass.pdf");
-
-    ParCanvas->Print("Particle.root");
-    InvCanvas->Print("InvMass.root");
-    InvPKCanvas->Print("InvPKMass.root");
-
-    ParCanvas->Print("Particle.C");
-    InvCanvas->Print("InvMass.C");
-    InvPKCanvas->Print("InvPKMass.C");
+    myFile->Close();
 
     /*  GESTIONE ERRORI E FINE PROGRAMMA  */
   } catch (std::exception const& Exception) {
