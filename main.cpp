@@ -33,7 +33,7 @@ int main() {
     /*  INIZIALIZZAZIONE VARIABILI/OGGETTI  */
 
     // file
-    TFile* myFile = new TFile("histogram", "CREATE");
+    TFile* myFile = new TFile("histogram.root", "CREATE");
 
     // istogrammi
     TH1D* hParticleType = new TH1D("Type", "Particle Types", 7, 0, 7);
