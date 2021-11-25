@@ -36,7 +36,7 @@ int main() {
     TFile* myFile = new TFile("histogram.root", "RECREATE");
 
     // istogrammi
-    TH1D* hParticleType = new TH1D("Type", "Particle Types", 7, 0, 7);
+    TH1D* hParticleType = new TH1D("ParticleType", "Particle Types", 7, 0, 7);
     TH1D* hTheta = new TH1D("Theta", "Theta", 1000, 0., M_PI);
     TH1D* hPhi = new TH1D("Phi", "Phi", 1000, 0., 2 * M_PI);
     TH1D* hImpulse = new TH1D("Impulse", "Momentum distribution", 1000, 0, 8);
@@ -52,13 +52,13 @@ int main() {
     TH1D* hInvMassPpKp =
         new TH1D("InvMassPpK", "Invariant Mass pione+/kaone+", 1000, 0.62, 3);
     TH1D* hInvMassPpKm =
-        new TH1D("hInvMassPpKm", "Invariant Mass pione+/kaone-", 1000, 0.62, 3);
+        new TH1D("InvMassPpKm", "Invariant Mass pione+/kaone-", 1000, 0.62, 3);
     TH1D* hInvMassPmKp =
-        new TH1D("hInvMassPmKp", "Invariant Mass pione-/kaone+", 1000, 0.62, 3);
+        new TH1D("InvMassPmKp", "Invariant Mass pione-/kaone+", 1000, 0.62, 3);
     TH1D* hInvMassPmKm =
-        new TH1D("hInvMassPmKm", "Invariant Mass pione-/kaone-", 1000, 0.62, 3);
+        new TH1D("InvMassPmKm", "Invariant Mass pione-/kaone-", 1000, 0.62, 3);
     TH1D* hInvMassDecay = new TH1D(
-        "hInvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.8);
+        "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.8);
 
     // array delle particelle
     std::array<Particle, 120> myParticleArray({});

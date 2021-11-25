@@ -7,20 +7,20 @@
 void analyze() {
   TFile* hFile = new TFile("histogram.root", "READ");
 
-  TH1D* ParticleType = (TH1D*)hFile->Get("hParticleType");
-  TH1D* Theta = (TH1D*)hFile->Get("hTheta");
-  TH1D* Phi = (TH1D*)hFile->Get("hPhi");
-  TH1D* Impulse = (TH1D*)hFile->Get("hImpulse");
-  TH1D* TrasversalImpulse = (TH1D*)hFile->Get("hTrasversalImpulse");
-  TH1D* Energy = (TH1D*)hFile->Get("hEnergy");
-  TH1D* InvMass = (TH1D*)hFile->Get("hInvMass");
-  TH1D* InvMassOppCharge = (TH1D*)hFile->Get("hInvMassOppCharge");
-  TH1D* InvMassSameCharge = (TH1D*)hFile->Get("hInvMassSameCharge");
-  TH1D* InvMassPpKp = (TH1D*)hFile->Get("hInvMassPpKp");
-  TH1D* InvMassPpKm = (TH1D*)hFile->Get("hInvMassPpKm");
-  TH1D* InvMassPmKp = (TH1D*)hFile->Get("hInvMassPmKp");
-  TH1D* InvMassPmKm = (TH1D*)hFile->Get("hInvMassPmKm");
-  TH1D* InvMassDecay = (TH1D*)hFile->Get("hInvMassDecay");
+  TH1D* particleType = (TH1D*)hFile->Get("ParticleType");
+  TH1D* pheta = (TH1D*)hFile->Get("Theta");
+  TH1D* phi = (TH1D*)hFile->Get("Phi");
+  TH1D* impulse = (TH1D*)hFile->Get("Impulse");
+  TH1D* trasversalImpulse = (TH1D*)hFile->Get("TrasversalImpulse");
+  TH1D* energy = (TH1D*)hFile->Get("Energy");
+  TH1D* invMass = (TH1D*)hFile->Get("InvMass");
+  TH1D* invMassOppCharge = (TH1D*)hFile->Get("InvMassOppCharge");
+  TH1D* invMassSameCharge = (TH1D*)hFile->Get("InvMassSameCharge");
+  TH1D* invMassPpKp = (TH1D*)hFile->Get("InvMassPpKp");
+  TH1D* invMassPpKm = (TH1D*)hFile->Get("InvMassPpKm");
+  TH1D* invMassPmKp = (TH1D*)hFile->Get("InvMassPmKp");
+  TH1D* invMassPmKm = (TH1D*)hFile->Get("InvMassPmKm");
+  TH1D* invMassDecay = (TH1D*)hFile->Get("InvMassDecay");
 
   // canvas
   TCanvas* ParCanvas = new TCanvas("ParticleCanvas", "Particle");
@@ -35,35 +35,35 @@ void analyze() {
   gStyle->SetOptStat(112210);
 
   ParCanvas->cd(1);
-  ParticleType->DrawCopy();
+  particleType->DrawCopy();
   ParCanvas->cd(2);
-  Theta->DrawCopy();
+  theta->DrawCopy();
   ParCanvas->cd(3);
-  Phi->DrawCopy();
+  phi->DrawCopy();
   ParCanvas->cd(4);
-  Impulse->DrawCopy();
+  impulse->DrawCopy();
   ParCanvas->cd(5);
-  TrasversalImpulse->DrawCopy();
+  trasversalImpulse->DrawCopy();
   ParCanvas->cd(6);
-  Energy->DrawCopy();
+  energy->DrawCopy();
 
   InvCanvas->cd(1);
-  InvMass->DrawCopy();
+  invMass->DrawCopy();
   InvCanvas->cd(2);
-  InvMassOppCharge->DrawCopy();
+  invMassOppCharge->DrawCopy();
   InvCanvas->cd(3);
-  InvMassSameCharge->DrawCopy();
+  invMassSameCharge->DrawCopy();
   InvCanvas->cd(4);
-  InvMassDecay->DrawCopy();
+  invMassDecay->DrawCopy();
 
   InvPKCanvas->cd(1);
-  InvMassPpKp->DrawCopy();
+  invMassPpKp->DrawCopy();
   InvPKCanvas->cd(2);
-  InvMassPpKm->DrawCopy();
+  invMassPpKm->DrawCopy();
   InvPKCanvas->cd(3);
-  InvMassPmKp->DrawCopy();
+  invMassPmKp->DrawCopy();
   InvPKCanvas->cd(4);
-  InvMassPmKm->DrawCopy();
+  invMassPmKm->DrawCopy();
 
   ParCanvas->Draw();
   InvCanvas->Draw();
