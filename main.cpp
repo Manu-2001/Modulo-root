@@ -214,7 +214,7 @@ int main() {
     }  // fine ciclo for eventi
 
     /*  SALVATAGGIO ISTOGRAMMI */
-    typeError = myFile->TFile::Write();
+    typeError = myFile->Write();
 
     if (typeError) {
       std::cerr << "TFile::Write(): " << typeError << ".\n";
