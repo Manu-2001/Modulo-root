@@ -5,7 +5,7 @@
 #include "TStyle.h"
 
 void analyze() {
-  TFile* hFile = new TFile("histogram.root", "WRITE");
+  TFile* hFile = new TFile("histogram.root", "READ");
 
   TH1D* ParticleType = (TH1D*)hFile->Get("hParticleType");
   TH1D* Theta = (TH1D*)hFile->Get("hTheta");
