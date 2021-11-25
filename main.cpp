@@ -12,7 +12,7 @@
 #include "resonancetype.hpp"
 
 int main() {
-  // bloco try-catch
+  // blocco try-catch
   try {
     R__LOAD_LIBRARY(point_cpp.so);
     R__LOAD_LIBRARY(particletype_cpp.so);
