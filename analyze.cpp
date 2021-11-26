@@ -1,12 +1,22 @@
+#include <cmath>
+#include <iostream>
+
 #include "TCanvas.h"
+#include "TF1.h"
 #include "TFile.h"
 #include "TH1D.h"
 #include "TROOT.h"
 #include "TStyle.h"
 
 void analyze() {
+  // apertura file
   TFile* hFile = new TFile("histogram.root", "READ");
 
+  // funzioni
+  TF1* uniform = new TF1("Uniform", "[0]", 0., 2 * M_PI);
+  TF1* exp = new TF1("Exp", "[0] * exp([1] * x + [2]) + [3]", 0., 8.);
+
+  // istogrammi da file salvato
   TH1D* particleType = (TH1D*)hFile->Get("ParticleType");
   TH1D* theta = (TH1D*)hFile->Get("Theta");
   TH1D* phi = (TH1D*)hFile->Get("Phi");
@@ -16,7 +26,7 @@ void analyze() {
   TH1D* invMass = (TH1D*)hFile->Get("InvMass");
   TH1D* invMassOppCharge = (TH1D*)hFile->Get("InvMassOppCharge");
   TH1D* invMassSameCharge = (TH1D*)hFile->Get("InvMassSameCharge");
-  TH1D* invMassPpKp = (TH1D*)hFile->Get("InvMassPpK");
+  TH1D* invMassPpKp = (TH1D*)hFile->Get("InvMassPpKp");
   TH1D* invMassPpKm = (TH1D*)hFile->Get("InvMassPpKm");
   TH1D* invMassPmKp = (TH1D*)hFile->Get("InvMassPmKp");
   TH1D* invMassPmKm = (TH1D*)hFile->Get("InvMassPmKm");
@@ -28,6 +38,33 @@ void analyze() {
   TCanvas* InvPKCanvas =
       new TCanvas("InvPioneKaoneCanvas", "Massa invariante pione kaone");
 
+  double binContent{};
+  double binError{};
+  double entries{};
+
+  std::cout << "Histogram: ParticleType";
+
+  entries = particleType->GetEntries();
+
+  for (int bin{}; bin != 8; ++bin) {
+    binContent = particleType->GetBinContent(bin);
+    binError = particleType->GetBinError(bin);
+
+    std::cout << "\nbin:\t" << bin << "proportion:\t" << binContent / entries
+              << "+/-" << binError / entries;
+  }
+
+  std::cout << "\nHistogram: Theta";
+  uniform->SetParameters(1E5);
+  theta->Fit("Uniform", "R");
+
+  TH1F* FitUniform = theta->GetFunction("Uniform");
+  std::cout << "Risultati fit: y = " << FitUniform->GetParameter(0)
+            << ", paramiter error: " << FitUniform->GetParError(0)
+            << "\nChi/NDF: "
+            << FitUniform->GetChisquare() / FitUniform->GetNDF();
+
+  // stampa canvas
   ParCanvas->Divide(3, 2);
   InvCanvas->Divide(2, 2);
   InvPKCanvas->Divide(2, 2);
