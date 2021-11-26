@@ -137,6 +137,7 @@ int main() {
           // particle e particle+1 saranno gli esiti del decadimento
           // incremento last particle per generare sempre 100 particelle
           ++lastParticle;
+          
           if (lastParticle == kaon) {
             throw std::runtime_error{
                 "error in main() : myParticleArray is full"};
