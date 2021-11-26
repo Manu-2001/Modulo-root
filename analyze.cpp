@@ -42,26 +42,27 @@ void analyze() {
   double binError{};
   double entries{};
 
-  std::cout << "Histogram: ParticleType";
+  std::cout << "Histogram: ParticleType"
+            << "\nbin\t\tproportion\n";
 
   entries = particleType->GetEntries();
 
-  for (int bin{}; bin != 8; ++bin) {
+  for (int bin{1}; bin != 8; ++bin) {
     binContent = particleType->GetBinContent(bin);
     binError = particleType->GetBinError(bin);
 
-    std::cout << "\nbin:\t" << bin << "proportion:\t" << binContent / entries
-              << "+/-" << binError / entries;
+    std::cout << bin << '\t' << binContent / entries << " +- "
+              << binError / entries << '\n';
   }
 
   std::cout << "\nHistogram: Theta";
-  uniform->SetParameters(1E5);
+  uniform->SetParameters(10E5);
   theta->Fit("Uniform", "R");
 
   TF1* FitUniform = theta->GetFunction("Uniform");
-  std::cout << "Risultati fit: y = " << FitUniform->GetParameter(0)
+  std::cout << "Risultati fit: y = " << FitUniform->GetParameters(0)
             << ", paramiter error: " << FitUniform->GetParError(0)
-            << "\nChi/NDF: "
+            << "\nChisquare/NDF: "
             << FitUniform->GetChisquare() / FitUniform->GetNDF();
 
   // stampa canvas
