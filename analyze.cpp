@@ -14,7 +14,7 @@ void analyze() {
 
   // funzioni
   TF1* uniform = new TF1("Uniform", "[0]", 0., 2 * M_PI);
-  TF1* exp = new TF1("Exp", "[0] * exp([1] * x + [2]) + [3]", 0., 8.);
+  TF1* exp = new TF1("Exp", "[0]*exp([1] * x + [2]) + [3]", 0., 8.);
 
   // istogrammi da file salvato
   TH1D* particleType = (TH1D*)hFile->Get("ParticleType");
@@ -42,7 +42,9 @@ void analyze() {
   double binError{};
   double entries{};
 
-  std::cout << "Histogram: ParticleType"
+  /*  PARTE 9 */
+
+  std::cout << "\n\tHistogram: ParticleType"
             << "\nbin\t\tproportion\n";
 
   entries = particleType->GetEntries();
@@ -55,15 +57,45 @@ void analyze() {
               << binError / entries << '\n';
   }
 
-  std::cout << "\nHistogram: Theta";
-  uniform->SetParameters(10E5);
-  theta->Fit("Uniform", "R");
+  std::cout << "\n\n\tHistogram: Theta\n";
 
-  TF1* FitUniform = theta->GetFunction("Uniform");
-  std::cout << "Risultati fit: y = " << FitUniform->GetParameters(0)
-            << ", paramiter error: " << FitUniform->GetParError(0)
-            << "\nChisquare/NDF: "
-            << FitUniform->GetChisquare() / FitUniform->GetNDF();
+  theta->Fit("Uniform");
+
+  std::cout << "\nTheta fit result: y = " << uniform->GetParameter(0) << " +- "
+            << uniform->GetParError(0) << ".\n"
+            << "Chisquare/NDF: " << uniform->GetChisquare() / uniform->GetNDF()
+            << ".\n";
+
+  std::cout << "\n\n\tHistogram: Phi\n";
+
+  phi->Fit("Uniform");
+
+  std::cout << "\nPhi fit result: y = " << uniform->GetParameter(0) << " +- "
+            << uniform->GetParError(0) << ".\n"
+            << "Chisquare/NDF: " << uniform->GetChisquare() / uniform->GetNDF()
+            << ".\n";
+
+  std::cout << "\n\n\tHistogram: Momentum Norm"
+            << "\n function: par[0] * exp(par[1] * x + par[2]) + par[3]\n\n";
+
+  exp->SetParameters(800E3, -1, 0, 0);
+
+  impulse->Fit("Exp");
+
+  TF1* fitResult = impulse->GetFunction("Exp");
+
+  const Double_t* par = fitResult->GetParameters();
+  const Double_t* dpar = fitResult->GetParErrors();
+
+  for (Int_t i{}; i != 4; i++) {
+    std::cout << "\n par[" << i << "] = " << par[i] << " dpar[" << i
+              << "] = " << dpar[i];
+  }
+
+  std::cout << "\n\nChisquare/NDF ="
+            << fitResult->GetChisquare() / fitResult->GetNDF() << '\n';
+
+  /*  PARTE 11  */
 
   // stampa canvas
   ParCanvas->Divide(3, 2);
