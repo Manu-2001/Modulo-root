@@ -58,7 +58,7 @@ void analyze() {
   uniform->SetParameters(1E5);
   theta->Fit("Uniform", "R");
 
-  TH1F* FitUniform = theta->GetFunction("Uniform");
+  TF1* FitUniform = theta->GetFunction("Uniform");
   std::cout << "Risultati fit: y = " << FitUniform->GetParameter(0)
             << ", paramiter error: " << FitUniform->GetParError(0)
             << "\nChi/NDF: "
