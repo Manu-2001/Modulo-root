@@ -49,16 +49,14 @@ int main() {
                  0.225, 5);
     TH1D* hInvMassSameCharge = new TH1D(
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0.225, 5);
-    TH1D* hInvMassPpKp =
-        new TH1D("InvMassPpKp", "Invariant Mass pione+/kaone+", 1000, 0.62, 3);
-    TH1D* hInvMassPpKm =
-        new TH1D("InvMassPpKm", "Invariant Mass pione+/kaone-", 1000, 0.62, 3);
-    TH1D* hInvMassPmKp =
-        new TH1D("InvMassPmKp", "Invariant Mass pione-/kaone+", 1000, 0.62, 3);
-    TH1D* hInvMassPmKm =
-        new TH1D("InvMassPmKm", "Invariant Mass pione-/kaone-", 1000, 0.62, 3);
     TH1D* hInvMassDecay = new TH1D(
         "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.8);
+    TH1D* hInvMassSameChargePK =
+        new TH1D("InvMassSameChargePK",
+                 "Invariant Mass same charge pione/kaone", 1000, 0.62, 3.2);
+    TH1D* hInvMassOppChargePK =
+        new TH1D("InvMassOppChargePK",
+                 "Invariant Mass opposite charge pione/kaone", 1000, 0.62, 3.2);
 
     // array delle particelle
     std::array<Particle, 120> myParticleArray({});
@@ -137,7 +135,7 @@ int main() {
           // particle e particle+1 saranno gli esiti del decadimento
           // incremento last particle per generare sempre 100 particelle
           ++lastParticle;
-          
+
           if (lastParticle == kaon) {
             throw std::runtime_error{
                 "error in main() : myParticleArray is full"};
@@ -194,19 +192,9 @@ int main() {
           // fill istogrammi massa invariante pione/kaone
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
               npIndex < 4) {
-            if ((pIndex == 0 && npIndex == 2) ||
-                (npIndex == 0 && pIndex == 2)) {
-              hInvMassPpKp->Fill(invMass);
-            } else if ((pIndex == 0 && npIndex == 3) ||
-                       (npIndex == 0 && pIndex == 3)) {
-              hInvMassPpKm->Fill(invMass);
-            } else if ((pIndex == 1 && npIndex == 2) ||
-                       (npIndex == 1 && pIndex == 2)) {
-              hInvMassPmKp->Fill(invMass);
-            } else if ((pIndex == 1 && npIndex == 3) ||
-                       (npIndex == 1 && pIndex == 3)) {
-              hInvMassPmKm->Fill(invMass);
-            }
+            (next->GetCharge() * pCharge > 0)
+                ? hInvMassSameChargePK->Fill(invMass)
+                : hInvMassOppChargePK->Fill(invMass);
           }
 
         }  // fine ciclo for
