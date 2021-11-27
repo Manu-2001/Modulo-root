@@ -69,9 +69,8 @@ int main() {
     iterator const last = myParticleArray.end() - 20;
     iterator const kaon = myParticleArray.end() - 1;
 
-    // indice di particle e next
+    // indice e carica di particle
     unsigned int pIndex{};
-    unsigned int npIndex{};
     int pCharge{};
     int typeError{};
 
@@ -180,9 +179,7 @@ int main() {
         pCharge = particle->GetCharge();
 
         for (next = particle + 1; next != lastParticle; ++next) {
-          npIndex = next->GetTypeIndex();
           invMass = particle->InvMass(*next);
-
           hInvMass->Fill(invMass);
 
           // fill istogrammi carica discorde e concorde
@@ -191,7 +188,7 @@ int main() {
 
           // fill istogrammi massa invariante pione/kaone
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
-              npIndex < 4) {
+              next->GetTypeIndex() < 4) {
             (next->GetCharge() * pCharge > 0)
                 ? hInvMassSameChargePK->Fill(invMass)
                 : hInvMassOppChargePK->Fill(invMass);
