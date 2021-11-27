@@ -4,6 +4,7 @@
 
 #include "TFile.h"
 #include "TH1D.h"
+#include "TMath.h"
 #include "TROOT.h"
 #include "TRandom.h"
 #include "particle.hpp"
@@ -75,11 +76,13 @@ int main() {
     int typeError{};
 
     // variabili
-    double phi{};
-    double theta{};
-    double pNorm{};
-    double result{};
-    double invMass{};
+    Double_t phi{};
+    Double_t theta{};
+    Double_t pNorm{};
+    Double_t result{};
+    Double_t invMass{};
+
+    // momento
     Point<double> P{};
 
     /*  FINE INIZIALIZZAZIONE VARIABILI/OGGETTI, ISTRUZIONI PROGRAMMA */
@@ -93,8 +96,8 @@ int main() {
 
       // riempimento array
       for (particle = first; particle != lastParticle; ++particle) {
-        phi = gRandom->Uniform(0., 2 * M_PI);
-        theta = gRandom->Uniform(0., M_PI);
+        phi = gRandom->Uniform(0., 2 * TMath::Pi());
+        theta = gRandom->Uniform(0., TMath::Pi());
         pNorm = gRandom->Exp(1.);
 
         P.x = sin(theta) * cos(phi) * pNorm;
