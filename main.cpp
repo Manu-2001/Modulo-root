@@ -186,13 +186,13 @@ int main() {
           hInvMass->Fill(invMass);
 
           // fill istogrammi carica discorde e concorde
-          (next->GetCharge() * pCharge > 0) ? hInvMassSameCharge->Fill(invMass)
+          (next->GetCharge() * pCharge > 0.) ? hInvMassSameCharge->Fill(invMass)
                                             : hInvMassOppCharge->Fill(invMass);
 
           // fill istogrammi massa invariante pione/kaone
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
               next->GetTypeIndex() < 4) {
-            (next->GetCharge() * pCharge > 0)
+            (next->GetCharge() * pCharge > 0.)
                 ? hInvMassSameChargePK->Fill(invMass)
                 : hInvMassOppChargePK->Fill(invMass);
           }
