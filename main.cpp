@@ -22,13 +22,13 @@ int main() {
     using iterator = std::array<Particle, 120>::iterator;
 
     // tipi di partielle
-    Particle::AddParticleType("pion+", 0.13957, +1);
-    Particle::AddParticleType("pion-", 0.13957, -1);
-    Particle::AddParticleType("kaon+", 0.49367, +1);
-    Particle::AddParticleType("kaon-", 0.49367, -1);
-    Particle::AddParticleType("proton", 0.93827, +1);
-    Particle::AddParticleType("antiproton", 0.93827, -1);
-    Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);
+    Particle::AddParticleType("pion+", 0.13957, +1);        // pion+  Index = 0
+    Particle::AddParticleType("pion-", 0.13957, -1);        // pion-  Index = 1
+    Particle::AddParticleType("kaon+", 0.49367, +1);        // kaon+  Index = 2
+    Particle::AddParticleType("kaon-", 0.49367, -1);        // kaon-  Index = 3
+    Particle::AddParticleType("proton", 0.93827, +1);       // proton Index = 4
+    Particle::AddParticleType("antiproton", 0.93827, -1);   // antip  Index = 5
+    Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);  // kaon*  Index = 6
 
     /*  INIZIALIZZAZIONE VARIABILI/OGGETTI  */
 
@@ -86,7 +86,7 @@ int main() {
     /*  FINE INIZIALIZZAZIONE VARIABILI/OGGETTI, ISTRUZIONI PROGRAMMA */
 
     // indice kaone*
-    kaon->SetTypeIndex("kaon*");
+    kaon->SetTypeIndex(6);
 
     // inizio generazione eventi
     for (int event{}; event != 10E5; ++event) {
@@ -108,36 +108,36 @@ int main() {
 
         // indice, fill istogrammi energia e tipo
         if (result <= 0.4) {
-          particle->SetTypeIndex("pion+");
+          particle->SetTypeIndex(0);  // pion+
 
           (void)hParticleType->Fill(0);
           (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.8) {
-          particle->SetTypeIndex("pion-");
+          particle->SetTypeIndex(1);  // pion-
 
           (void)hParticleType->Fill(1);
           (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.85) {
-          particle->SetTypeIndex("kaon+");
+          particle->SetTypeIndex(2);  // kaon+
 
           (void)hParticleType->Fill(2);
           (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.9) {
-          particle->SetTypeIndex("kaon-");
+          particle->SetTypeIndex(3);  // kaon-
 
           (void)hParticleType->Fill(3);
           (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.945) {
-          particle->SetTypeIndex("proton");
+          particle->SetTypeIndex(4);  //  proton
 
           (void)hParticleType->Fill(4);
           (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.99) {
-          particle->SetTypeIndex("antiproton");
+          particle->SetTypeIndex(5);  //  antiproton
 
           (void)hParticleType->Fill(5);
           (void)hEnergy->Fill(particle->Energy());
-        } else {
+        } else {  //  kaone*
           // particle e particle+1 saranno gli esiti del decadimento
           // incremento last particle per generare sempre 100 particelle
           ++lastParticle;
@@ -155,13 +155,13 @@ int main() {
           result = gRandom->Rndm();
 
           if (result < 0.5) {
-            particle->SetTypeIndex("pion+");
+            particle->SetTypeIndex(0);  //  pion+
             ++particle;
-            particle->SetTypeIndex("kaon-");
+            particle->SetTypeIndex(3);  //  kaon-
           } else {
-            particle->SetTypeIndex("pion-");
+            particle->SetTypeIndex(1);  //  pion-
             ++particle;
-            particle->SetTypeIndex("kaon+");
+            particle->SetTypeIndex(2);  //  kaon+
           }
 
           (void)kaon->Decay2body(*particle, *(particle - 1));
