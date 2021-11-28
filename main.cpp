@@ -76,11 +76,11 @@ int main() {
     int typeError{};
 
     // variabili
-    Double_t phi{};
-    Double_t theta{};
-    Double_t pNorm{};
-    Double_t result{};
-    Double_t invMass{};
+    double phi{};
+    double theta{};
+    double pNorm{};
+    double result{};
+    double invMass{};
 
     // momento
     Point<double> P{};
