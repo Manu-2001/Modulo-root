@@ -163,7 +163,7 @@ int main() {
           typeError = kaon->Decay2body(*particle, *(particle - 1));
 
           if (typeError) {
-            std::cerr << "type error: " << typeError << 'n';
+            std::cerr << "type error: " << typeError << '\n';
           }
 
           // fill istogramma massa invariante particelle decadute
