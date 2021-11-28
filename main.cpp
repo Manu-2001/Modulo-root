@@ -72,7 +72,6 @@ int main() {
     // indice e carica di particle
     unsigned int pIndex{};
     int pCharge{};
-    int typeError{};
 
     // variabili
     double phi{};
@@ -110,28 +109,34 @@ int main() {
         // indice, fill istogrammi energia e tipo
         if (result <= 0.4) {
           particle->SetTypeIndex("pion+");
-          hParticleType->Fill(0);
-          hEnergy->Fill(particle->Energy());
+
+          (void)hParticleType->Fill(0);
+          (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.8) {
           particle->SetTypeIndex("pion-");
-          hParticleType->Fill(1);
-          hEnergy->Fill(particle->Energy());
+
+          (void)hParticleType->Fill(1);
+          (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.85) {
           particle->SetTypeIndex("kaon+");
-          hParticleType->Fill(2);
-          hEnergy->Fill(particle->Energy());
+
+          (void)hParticleType->Fill(2);
+          (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.9) {
           particle->SetTypeIndex("kaon-");
-          hParticleType->Fill(3);
-          hEnergy->Fill(particle->Energy());
+
+          (void)hParticleType->Fill(3);
+          (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.945) {
           particle->SetTypeIndex("proton");
-          hParticleType->Fill(4);
-          hEnergy->Fill(particle->Energy());
+
+          (void)hParticleType->Fill(4);
+          (void)hEnergy->Fill(particle->Energy());
         } else if (result <= 0.99) {
           particle->SetTypeIndex("antiproton");
-          hParticleType->Fill(5);
-          hEnergy->Fill(particle->Energy());
+
+          (void)hParticleType->Fill(5);
+          (void)hEnergy->Fill(particle->Energy());
         } else {
           // particle e particle+1 saranno gli esiti del decadimento
           // incremento last particle per generare sempre 100 particelle
@@ -144,8 +149,8 @@ int main() {
 
           kaon->SetMomentum(P);
 
-          hParticleType->Fill(6);
-          hEnergy->Fill(kaon->Energy());
+          (void)hParticleType->Fill(6);
+          (void)hEnergy->Fill(kaon->Energy());
 
           result = gRandom->Rndm();
 
@@ -159,21 +164,17 @@ int main() {
             particle->SetTypeIndex("kaon+");
           }
 
-          typeError = kaon->Decay2body(*particle, *(particle - 1));
-
-          if (typeError) {
-            std::cerr << "type error: " << typeError << '\n';
-          }
+          (void)kaon->Decay2body(*particle, *(particle - 1));
 
           // fill istogramma massa invariante particelle decadute
-          hInvMassDecay->Fill(particle->InvMass(*(particle - 1)));
+          (void)hInvMassDecay->Fill(particle->InvMass(*(particle - 1)));
         }
 
         // fill istogrammi proprietà geometriche e impulso
-        hTheta->Fill(theta);
-        hPhi->Fill(phi);
-        hImpulse->Fill(pNorm);
-        hTrasversalImpulse->Fill(sqrt(P.x * P.x + P.y * P.y));
+        (void)hTheta->Fill(theta);
+        (void)hPhi->Fill(phi);
+        (void)hImpulse->Fill(pNorm);
+        (void)hTrasversalImpulse->Fill(sqrt(P.x * P.x + P.y * P.y));
       }  // fine ciclo for, riempimento array completato
 
       for (particle = first; particle != lastParticle; ++particle) {
@@ -182,18 +183,20 @@ int main() {
 
         for (next = particle + 1; next != lastParticle; ++next) {
           invMass = particle->InvMass(*next);
-          hInvMass->Fill(invMass);
+
+          (void)hInvMass->Fill(invMass);
 
           // fill istogrammi carica discorde e concorde
-          (next->GetCharge() * pCharge > 0.) ? hInvMassSameCharge->Fill(invMass)
-                                             : hInvMassOppCharge->Fill(invMass);
+          (next->GetCharge() * pCharge > 0.)
+              ? (void)hInvMassSameCharge->Fill(invMass)
+              : (void)hInvMassOppCharge->Fill(invMass);
 
           // fill istogrammi massa invariante pione/kaone
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
               next->GetTypeIndex() < 4) {
             (next->GetCharge() * pCharge > 0.)
-                ? hInvMassSameChargePK->Fill(invMass)
-                : hInvMassOppChargePK->Fill(invMass);
+                ? (void)hInvMassSameChargePK->Fill(invMass)
+                : (void)hInvMassOppChargePK->Fill(invMass);
           }
 
         }  // fine ciclo for
@@ -202,11 +205,7 @@ int main() {
     }  // fine ciclo for eventi
 
     /*  SALVATAGGIO ISTOGRAMMI */
-    typeError = myFile->Write();
-
-    if (typeError) {
-      std::cerr << "TFile::Write(): " << typeError << '\n';
-    }
+    (void)myFile->Write();
 
     myFile->Close();
 
