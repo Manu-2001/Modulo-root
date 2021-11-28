@@ -163,7 +163,7 @@ int main() {
           typeError = kaon->Decay2body(*particle, *(particle - 1));
 
           if (typeError) {
-            std::cerr << "type error: " << typeError << '\n';
+            std::cerr << "type error: " << typeError << 'n';
           }
 
           // fill istogramma massa invariante particelle decadute
@@ -187,7 +187,7 @@ int main() {
 
           // fill istogrammi carica discorde e concorde
           (next->GetCharge() * pCharge > 0.) ? hInvMassSameCharge->Fill(invMass)
-                                            : hInvMassOppCharge->Fill(invMass);
+                                             : hInvMassOppCharge->Fill(invMass);
 
           // fill istogrammi massa invariante pione/kaone
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
