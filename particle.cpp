@@ -197,4 +197,5 @@ unsigned int Particle::FindParticle(std::string const& name) {
   return typePosition - fParticleType.begin();
 }
 
+// attributi statici
 std::vector<std::unique_ptr<ParticleType>> Particle::fParticleType{};
