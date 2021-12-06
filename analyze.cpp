@@ -39,21 +39,9 @@ void analyze() {
   TH1D* hDiffSameOppCharge = new TH1D(
       "DiffSameOppCharge", "Opposite Charge - Same Charge", 1000, 0.225, 5);
 
-  // canvas
-  TCanvas* RandomValueC =
-      new TCanvas("RandomValueCanvas", "Proprietà generate");
-  TCanvas* InvMassEnergyC =
-      new TCanvas("InvMassEnergyCanvas", "Energia e massa invariante");
-  TCanvas* InvSameOppC = new TCanvas(
-      "InvOppositeSameCanvas", "Massa invariante carica concorde e discorde");
-  TCanvas* InvSubCanvas =
-      new TCanvas("InvMassSubCanvas", "Invariant Mass Subtraction");
-
   double binContent{};
   double binError{};
   double entries{};
-
-  Bool_t typeError{};
 
   /*  PARTE 9 */
 
@@ -109,23 +97,22 @@ void analyze() {
             << fitResult->GetChisquare() / fitResult->GetNDF() << '\n';
 
   /*  PARTE 10 */
+
   hDiffSameOppPK->Sumw2();
   hDiffSameOppCharge->Sumw2();
 
-  typeError =
-      hDiffSameOppPK->Add(invMassOppChargePK, invMassSameChargePK, 1, -1);
-  typeError =
-      hDiffSameOppCharge->Add(invMassSameCharge, invMassOppCharge, 1, -1);
+  (void)hDiffSameOppPK->Add(invMassOppChargePK, invMassSameChargePK, 1, -1);
+  (void)hDiffSameOppCharge->Add(invMassSameCharge, invMassOppCharge, 1, -1);
 
   /*  PARTE 11  */
 
   // stampa canvas
   gStyle->SetOptStat(112210);
- 
+
+  TCanvas* RandomValueC =
+      new TCanvas("RandomValueCanvas", "Proprietà generate");
+
   RandomValueC->Divide(2, 2);
-  InvMassEnergyC->Divide(2, 2);
-  InvSameOppC->Divide(2, 2);
-  InvSubCanvas->Divide(2);
 
   RandomValueC->cd(1);
   particleType->DrawCopy();
@@ -136,6 +123,11 @@ void analyze() {
   RandomValueC->cd(4);
   impulse->DrawCopy();
 
+  TCanvas* InvMassEnergyC =
+      new TCanvas("InvMassEnergyCanvas", "Energia e massa invariante");
+
+  InvMassEnergyC->Divide(2, 2);
+
   InvMassEnergyC->cd(1);
   trasversalImpulse->DrawCopy();
   InvMassEnergyC->cd(2);
@@ -144,6 +136,11 @@ void analyze() {
   invMass->DrawCopy();
   InvMassEnergyC->cd(4);
   invMassDecay->DrawCopy();
+
+  TCanvas* InvSameOppC = new TCanvas(
+      "InvOppositeSameCanvas", "Massa invariante carica concorde e discorde");
+
+  InvSameOppC->Divide(2, 2);
 
   InvSameOppC->cd(1);
   invMassSameCharge->DrawCopy();
@@ -154,10 +151,20 @@ void analyze() {
   InvSameOppC->cd(4);
   invMassOppChargePK->DrawCopy();
 
+  TCanvas* InvSubCanvas =
+      new TCanvas("InvMassSubCanvas", "Invariant Mass Subtraction");
+
+  InvSubCanvas->Divide(2);
+
   InvSubCanvas->cd(1);
   hDiffSameOppPK->DrawCopy();
   InvSubCanvas->cd(2);
   hDiffSameOppCharge->DrawCopy();
+
+  RandomValueC->Draw();
+  InvMassEnergyC->Draw();
+  InvSameOppC->Draw();
+  InvSubCanvas->Draw();
 
   RandomValueC->Print("RandomValue.pdf");
   InvMassEnergyC->Print("EnergiaInvMass.pdf");
