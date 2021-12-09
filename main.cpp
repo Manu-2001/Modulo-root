@@ -85,6 +85,12 @@ int main() {
 
     /*  FINE INIZIALIZZAZIONE VARIABILI/OGGETTI, ISTRUZIONI PROGRAMMA */
 
+    // errori somma in quadratura
+    hInvMassOppCharge->Sumw2();
+    hInvMassSameCharge->Sumw2();
+    hInvMassSameChargePK->Sumw2();
+    hInvMassOppChargePK->Sumw2();
+
     // indice kaone*
     kaon->SetTypeIndex(6);
 

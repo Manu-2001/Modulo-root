@@ -9,6 +9,16 @@
 #include "TStyle.h"
 
 void analyze() {
+  // canvas
+  TCanvas* RandomValueC =
+      new TCanvas("RandomValueCanvas", "Proprietà generate");
+  TCanvas* InvMassEnergyC =
+      new TCanvas("InvMassEnergyCanvas", "Energia e massa invariante");
+  TCanvas* InvSameOppC = new TCanvas(
+      "InvOppositeSameCanvas", "Massa invariante carica concorde e discorde");
+  TCanvas* InvSubCanvas =
+      new TCanvas("InvMassSubCanvas", "Invariant Mass Subtraction");
+
   // apertura file
   TFile* hFile = new TFile("histogram.root", "READ");
 
@@ -46,7 +56,7 @@ void analyze() {
   /*  PARTE 9 */
 
   std::cout << "\n\tHistogram: ParticleType"
-            << "\nbin\t\tproportion\n";
+            << "\n  bin\t\tproportion\n";
 
   entries = particleType->GetEntries();
 
@@ -54,7 +64,7 @@ void analyze() {
     binContent = particleType->GetBinContent(bin);
     binError = particleType->GetBinError(bin);
 
-    std::cout << bin << '\t' << binContent / entries << " +- "
+    std::cout << "  " << bin << '\t' << binContent / entries << " +- "
               << binError / entries << '\n';
   }
 
@@ -109,9 +119,6 @@ void analyze() {
   // stampa canvas
   gStyle->SetOptStat(112210);
 
-  TCanvas* RandomValueC =
-      new TCanvas("RandomValueCanvas", "Proprietà generate");
-
   RandomValueC->Divide(2, 2);
 
   RandomValueC->cd(1);
@@ -122,9 +129,6 @@ void analyze() {
   phi->DrawCopy();
   RandomValueC->cd(4);
   impulse->DrawCopy();
-
-  TCanvas* InvMassEnergyC =
-      new TCanvas("InvMassEnergyCanvas", "Energia e massa invariante");
 
   InvMassEnergyC->Divide(2, 2);
 
@@ -137,9 +141,6 @@ void analyze() {
   InvMassEnergyC->cd(4);
   invMassDecay->DrawCopy();
 
-  TCanvas* InvSameOppC = new TCanvas(
-      "InvOppositeSameCanvas", "Massa invariante carica concorde e discorde");
-
   InvSameOppC->Divide(2, 2);
 
   InvSameOppC->cd(1);
@@ -150,9 +151,6 @@ void analyze() {
   invMassSameChargePK->DrawCopy();
   InvSameOppC->cd(4);
   invMassOppChargePK->DrawCopy();
-
-  TCanvas* InvSubCanvas =
-      new TCanvas("InvMassSubCanvas", "Invariant Mass Subtraction");
 
   InvSubCanvas->Divide(2);
 
