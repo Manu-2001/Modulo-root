@@ -15,6 +15,8 @@ R__LOAD_LIBRARY(particle_cpp.so);
 
 int main() {
   try {
+    /*  INITIALIZATION OF VARIABLES AND OBJECT  */
+    
     using iterator = std::array<Particle, 120>::iterator;
 
     // type of particle
@@ -25,8 +27,6 @@ int main() {
     Particle::AddParticleType("proton", 0.93827, +1);       // proton Index = 4
     Particle::AddParticleType("antiproton", 0.93827, -1);   // antip  Index = 5
     Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);  // kaon*  Index = 6
-
-    /*  INITIALIZATION OF VARIABLES AND OBJECT  */
 
     // file
     TFile* myFile = new TFile("histogram.root", "RECREATE");
