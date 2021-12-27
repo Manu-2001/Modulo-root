@@ -52,10 +52,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   double massDau1 = dau1.GetMass();
   double massDau2 = dau2.GetMass();
 
-  if (this->fTypeIndex != fParticleType.size()) {  // add width effect
-
-    // gaussian random numbers
-
+  if (this->fTypeIndex != fParticleType.size()) {
     float x1, x2, w, y1, y2;
 
     double invnum = 1. / RAND_MAX;
@@ -73,9 +70,8 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   }
 
   if (massMot < massDau1 + massDau2) {
-    std::cerr
-        << "Decayment cannot be preformed because mass is too low in this "
-           "channel\n";
+    std::cerr << "Decayment cannot be preformed because mass is too low in "
+                 "this channel\n";
     return 2;
   }
 
@@ -96,7 +92,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   dau1.SetMomentum(Momentum);
   dau2.SetMomentum(-Momentum);
 
-  double energy = sqrt(pow(this->fMomentum.Norm(), 2) + massMot * massMot);
+  double energy = sqrt(this->fMomentum * this->fMomentum + massMot * massMot);
 
   Point<double> b = this->fMomentum / energy;
 
