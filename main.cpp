@@ -53,10 +53,10 @@ int main() {
         "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.8);
     TH1D* hInvMassOppChargePK =
         new TH1D("InvMassOppChargePK",
-                 "Invariant Mass opposite charge pione/kaone", 1000, 0.62, 3.2);
+                 "Invariant Mass opposite charge pione/kaone", 1000, 0, 5);
     TH1D* hInvMassSameChargePK =
         new TH1D("InvMassSameChargePK",
-                 "Invariant Mass same charge pione/kaone", 1000, 0.62, 3.2);
+                 "Invariant Mass same charge pione/kaone", 1000, 0, 5);
 
     // array delle particelle
     std::array<Particle, 120> myParticleArray({});
