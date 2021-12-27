@@ -32,9 +32,8 @@ Particle::Particle(std::string const& name, Point<double> const& momentum)
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
-    std::cerr
-        << "\nParticle::Particle(std::string&, Point<double>&) : Particle "
-           "name not found\n";
+    std::cerr << "\nParticle::Particle(std::string&, Point<double>&) : "
+                 "Particle name not found\n";
     return;
   }
 
