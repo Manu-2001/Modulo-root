@@ -229,6 +229,8 @@ int main() {
     delete hInvMassOppChargePK;
     delete hInvMassSameChargePK;
 
+    delete myFile;
+
     /*  GESTIONE ERRORI E FINE PROGRAMMA  */
   } catch (std::exception const& Exception) {
     std::cerr << Exception.what() << '\n';
