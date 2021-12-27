@@ -169,7 +169,7 @@ void Particle::Boost(Point<double> const& b) {
 unsigned int Particle::FindParticle(std::string const& name) {
   auto const typePosition =
       std::find_if(fParticleType.begin(), fParticleType.end(),
-                   [&name](ParticleTypePtr const& pointer) -> bool {
+                   [&name](ParticleTypePtr const& pointer) {
                      return pointer.get()->GetParticleName() == name;
                    });
 
