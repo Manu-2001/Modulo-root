@@ -137,8 +137,10 @@ void Particle::SetTypeIndex(std::string const& name) {
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
-    throw std::runtime_error{
-        "Particle::SetTypeIndex(std::string&) : Particle name not found"};
+    std::cerr
+        << "Particle::SetTypeIndex(std::string&) : Particle name not found";
+        
+    return;
   }
 
   this->fTypeIndex = index;
@@ -146,8 +148,9 @@ void Particle::SetTypeIndex(std::string const& name) {
 
 void Particle::SetTypeIndex(unsigned int const typeIndex) {
   if (typeIndex >= fParticleType.size()) {
-    throw std::runtime_error{
-        "Particle::SetTypeIndex(unsigned int) : Invalid typeIndex"};
+    std::cerr << "Particle::SetTypeIndex(unsigned int) : Invalid typeIndex";
+
+    return;
   }
 
   this->fTypeIndex = typeIndex;
