@@ -90,6 +90,9 @@ int main() {
     // kaone* index
     kaon->SetTypeIndex(6);
 
+    // Seed
+    gRandom->SetSeed();
+
     // start of event generation
     for (int event{}; event != 10E5; ++event) {
       lastParticle = last;
