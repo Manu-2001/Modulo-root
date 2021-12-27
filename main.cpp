@@ -51,12 +51,12 @@ int main() {
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0.225, 5);
     TH1D* hInvMassDecay = new TH1D(
         "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.8);
-    TH1D* hInvMassSameChargePK =
-        new TH1D("InvMassSameChargePK",
-                 "Invariant Mass same charge pione/kaone", 1000, 0.62, 3.2);
     TH1D* hInvMassOppChargePK =
         new TH1D("InvMassOppChargePK",
                  "Invariant Mass opposite charge pione/kaone", 1000, 0.62, 3.2);
+    TH1D* hInvMassSameChargePK =
+        new TH1D("InvMassSameChargePK",
+                 "Invariant Mass same charge pione/kaone", 1000, 0.62, 3.2);
 
     // array delle particelle
     std::array<Particle, 120> myParticleArray({});
@@ -214,6 +214,20 @@ int main() {
     (void)myFile->Write();
 
     myFile->Close();
+
+    // rimuovi le risorse
+    delete hParticleType;
+    delete hTheta;
+    delete hPhi;
+    delete hImpulse;
+    delete hTrasversalImpulse;
+    delete hEnergy;
+    delete hInvMass;
+    delete hInvMassOppCharge;
+    delete hInvMassSameCharge;
+    delete hInvMassDecay;
+    delete hInvMassOppChargePK;
+    delete hInvMassSameChargePK;
 
     /*  GESTIONE ERRORI E FINE PROGRAMMA  */
   } catch (std::exception const& Exception) {
