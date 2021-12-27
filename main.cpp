@@ -12,7 +12,6 @@
 #include "resonancetype.hpp"
 
 int main() {
-  // blocco try-catch
   try {
     R__LOAD_LIBRARY(point_cpp.so);
     R__LOAD_LIBRARY(particletype_cpp.so);
@@ -21,7 +20,7 @@ int main() {
 
     using iterator = std::array<Particle, 120>::iterator;
 
-    // tipi di partielle
+    // type of particle
     Particle::AddParticleType("pion+", 0.13957, +1);        // pion+  Index = 0
     Particle::AddParticleType("pion-", 0.13957, -1);        // pion-  Index = 1
     Particle::AddParticleType("kaon+", 0.49367, +1);        // kaon+  Index = 2
@@ -30,12 +29,12 @@ int main() {
     Particle::AddParticleType("antiproton", 0.93827, -1);   // antip  Index = 5
     Particle::AddParticleType("kaon*", 0.89166, 0, 0.050);  // kaon*  Index = 6
 
-    /*  INIZIALIZZAZIONE VARIABILI/OGGETTI  */
+    /*  INITIALIZATION OF VARIABLES AND OBJECT  */
 
     // file
     TFile* myFile = new TFile("histogram.root", "RECREATE");
 
-    // istogrammi
+    // histograms
     TH1D* hParticleType = new TH1D("ParticleType", "Particle Types", 7, 0, 7);
     TH1D* hTheta = new TH1D("Theta", "Theta", 1000, 0., M_PI);
     TH1D* hPhi = new TH1D("Phi", "Phi", 1000, 0., 2 * M_PI);
@@ -58,10 +57,10 @@ int main() {
         new TH1D("InvMassSameChargePK",
                  "Invariant Mass same charge pione/kaone", 1000, 0, 5);
 
-    // array delle particelle
+    // particle array
     std::array<Particle, 120> myParticleArray({});
 
-    // iteratori
+    // iterator
     iterator lastParticle{};
     iterator particle{};
     iterator next{};
@@ -69,36 +68,36 @@ int main() {
     iterator const last = myParticleArray.end() - 20;
     iterator const kaon = myParticleArray.end() - 1;
 
-    // indice e carica di particle
+    // particle index and charge
     unsigned int pIndex{};
     int pCharge{};
 
-    // variabili
+    // variables
     double phi{};
     double theta{};
     double pNorm{};
     double result{};
     double invMass{};
 
-    // momento
+    // momentum
     Point<double> P{};
 
-    /*  FINE INIZIALIZZAZIONE VARIABILI/OGGETTI, ISTRUZIONI PROGRAMMA */
+    /*  END OF INITIALIZATION OF VARIABLES / OBJECTS, PROGRAM INSTRUCTIONS */
 
-    // errori somma in quadratura
+    // sum in quadrature of the errors
     hInvMassOppCharge->Sumw2();
     hInvMassSameCharge->Sumw2();
     hInvMassSameChargePK->Sumw2();
     hInvMassOppChargePK->Sumw2();
 
-    // indice kaone*
+    // kaone* indec
     kaon->SetTypeIndex(6);
 
-    // inizio generazione eventi
+    // start of event generation
     for (int event{}; event != 10E5; ++event) {
       lastParticle = last;
 
-      // riempimento array
+      // array filling
       for (particle = first; particle != lastParticle; ++particle) {
         phi = gRandom->Uniform(0., 2 * M_PI);
         theta = gRandom->Uniform(0., M_PI);
@@ -112,7 +111,7 @@ int main() {
 
         result = gRandom->Rndm();
 
-        // indice, fill istogrammi energia e tipo
+        // index, fill energy and type histograms
         if (result <= 0.4) {
           particle->SetTypeIndex(0);  // pion+
 
@@ -144,8 +143,8 @@ int main() {
           (void)hParticleType->Fill(5);
           (void)hEnergy->Fill(particle->Energy());
         } else {  //  kaone*
-          // particle e particle+1 saranno gli esiti del decadimento
-          // incremento last particle per generare sempre 100 particelle
+          // particle and particle + 1 will be the results of the decay
+          // increment lastParticle to always generate 100 particles
           ++lastParticle;
 
           if (lastParticle == kaon) {
@@ -172,16 +171,16 @@ int main() {
 
           (void)kaon->Decay2body(*particle, *(particle - 1));
 
-          // fill istogramma massa invariante particelle decadute
+          // fill histogram invariant mass and decayed particles
           (void)hInvMassDecay->Fill(particle->InvMass(*(particle - 1)));
         }
 
-        // fill istogrammi proprietà geometriche e impulso
+        // fill histograms of geometric properties and impulse
         (void)hTheta->Fill(theta);
         (void)hPhi->Fill(phi);
         (void)hImpulse->Fill(pNorm);
         (void)hTrasversalImpulse->Fill(sqrt(P.x * P.x + P.y * P.y));
-      }  // fine ciclo for, riempimento array completato
+      }  // end of for loop, array filling completed
 
       for (particle = first; particle != lastParticle; ++particle) {
         pIndex = particle->GetTypeIndex();
@@ -192,12 +191,12 @@ int main() {
 
           (void)hInvMass->Fill(invMass);
 
-          // fill istogrammi carica discorde e concorde
+          // fill histograms of opposite/same charge
           (next->GetCharge() * pCharge > 0.)
               ? (void)hInvMassSameCharge->Fill(invMass)
               : (void)hInvMassOppCharge->Fill(invMass);
 
-          // fill istogrammi massa invariante pione/kaone
+          // fill histograms of pion/kaon opposite/same charge
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
               next->GetTypeIndex() < 4) {
             (next->GetCharge() * pCharge > 0.)
@@ -205,17 +204,17 @@ int main() {
                 : (void)hInvMassOppChargePK->Fill(invMass);
           }
 
-        }  // fine ciclo for
-      }    // fine ciclo for
+        }  // end of for loop
+      }    // end of for loop
 
-    }  // fine ciclo for eventi
+    }  // end of event for loop 
 
-    /*  SALVATAGGIO ISTOGRAMMI */
+    /*  SAVE HISTOGRAMS */
     (void)myFile->Write();
 
     myFile->Close();
 
-    // rimuovi le risorse
+    // delete resources
     delete hParticleType;
     delete hTheta;
     delete hPhi;
@@ -231,12 +230,12 @@ int main() {
 
     delete myFile;
 
-    /*  GESTIONE ERRORI E FINE PROGRAMMA  */
+    /*  ERROR HANDLING, END OF PROGRAM  */
   } catch (std::exception const& Exception) {
     std::cerr << Exception.what() << '\n';
     return EXIT_FAILURE;
   } catch (...) {
     std::cerr << "an unknown excwption was caught";
     return EXIT_FAILURE;
-  }  // fine blocco try-catch
+  }
 }
