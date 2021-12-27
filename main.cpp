@@ -90,7 +90,7 @@ int main() {
     hInvMassSameChargePK->Sumw2();
     hInvMassOppChargePK->Sumw2();
 
-    // kaone* indec
+    // kaone* index
     kaon->SetTypeIndex(6);
 
     // start of event generation
@@ -207,7 +207,7 @@ int main() {
         }  // end of for loop
       }    // end of for loop
 
-    }  // end of event for loop 
+    }  // end of event for loop
 
     /*  SAVE HISTOGRAMS */
     (void)myFile->Write();
