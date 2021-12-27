@@ -43,7 +43,7 @@ Particle::Particle(std::string const& name, Point<double> const& momentum)
 
 // public methods
 int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
-  if (this->GetMass() == 0.0) {
+  if (this->GetMass() == 0.) {
     std::cerr << "Decayment cannot be preformed if mass is zero\n";
     return 1;
   }
@@ -57,10 +57,10 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
     double invnum = 1. / RAND_MAX;
 
     do {
-      x1 = 2.0 * rand() * invnum - 1.0;
-      x2 = 2.0 * rand() * invnum - 1.0;
+      x1 = 2. * rand() * invnum - 1.;
+      x2 = 2. * rand() * invnum - 1.;
       w = x1 * x1 + x2 * x2;
-    } while (w >= 1.0);
+    } while (w >= 1.);
 
     w = sqrt((-2.0 * log(w)) / w);
     y1 = x1 * w;
@@ -79,7 +79,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
           (massMot * massMot - (massDau1 + massDau2) * (massDau1 + massDau2)) *
           (massMot * massMot - (massDau1 - massDau2) * (massDau1 - massDau2))) /
       massMot * 0.5;
-      
+
   double norm = 2 * M_PI / RAND_MAX;
   double phi = rand() * norm;
   double theta = rand() * norm * 0.5 - M_PI / 2.;
@@ -157,15 +157,12 @@ void Particle::SetTypeIndex(unsigned int const typeIndex) {
 
 // private static methods
 void Particle::Boost(Point<double> const& b) {
-  double const energy = this->Energy();
-
-  // Boost this Lorentz vector
   double b2 = b * b;
-  double gamma = 1.0 / sqrt(1.0 - b2);
+  double gamma = 1. / sqrt(1. - b2);
   double bp = this->fMomentum * b;
-  double gamma2 = (b2 > 0) ? (gamma - 1.0) / b2 : 0.0;
+  double gamma2 = (b2 > 0.) ? (gamma - 1.) / b2 : 0.;
 
-  this->fMomentum = b * (gamma2 * bp + gamma * energy);
+  this->fMomentum = b * (gamma2 * bp + gamma * this->Energy());
 }
 
 // private methods
