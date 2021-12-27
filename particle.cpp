@@ -100,8 +100,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
 }
 
 double Particle::Energy() const {
-  auto const mass = fParticleType[this->fTypeIndex]->GetMass();
-  return std::hypot(mass, fMomentum.Norm());
+  return std::hypot(GetMass(), fMomentum.Norm());
 }
 
 double Particle::InvMass(Particle const& particle) const {
