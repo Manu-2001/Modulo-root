@@ -44,8 +44,8 @@ class Particle {
 
   static std::vector<ParticleTypePtr> fParticleType;
 
-  Point<double> fMomentum;
   unsigned int fTypeIndex;
+  Point<double> fMomentum;
 };
 
 #endif

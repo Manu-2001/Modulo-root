@@ -11,7 +11,7 @@ struct Point {
 
   T x, y, z;
 
-  Point<T> (T x_ = T{}, T y_ = T{}, T z_ = T{}) : x{x_}, y{y_}, z{z_} {}
+  Point<T>(T x_ = T{}, T y_ = T{}, T z_ = T{}) : x{x_}, y{y_}, z{z_} {}
 
   T Norm() const {
     return sqrt(this->x * this->x + this->y * this->y + this->z * this->z);

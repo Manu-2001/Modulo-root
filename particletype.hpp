@@ -10,12 +10,14 @@ class ParticleType {
   ParticleType(std::string const&, double, int);
 
   virtual ~ParticleType();
+
   virtual void Print() const;
+
   virtual double GetWidth() const;
 
-  std::string const& GetParticleName() const;
-  double GetMass() const;
   int GetCharge() const;
+  double GetMass() const;
+  std::string const& GetParticleName() const;
 
  private:
   std::string const fName;

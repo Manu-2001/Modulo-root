@@ -25,10 +25,10 @@ void Particle::PrintParticleType() {
 }
 
 // costructor
-Particle::Particle() : fMomentum{}, fTypeIndex{} {}
+Particle::Particle() : fTypeIndex{}, fMomentum{} {}
 
 Particle::Particle(std::string const& name, Point<double> const& momentum)
-    : fMomentum{momentum}, fTypeIndex{} {
+    : fTypeIndex{}, fMomentum{momentum} {
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {

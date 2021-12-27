@@ -1,6 +1,6 @@
 #include "particletype.hpp"
 
-// costruttore
+// costructor
 ParticleType::ParticleType(std::string const& name, double mass, int charge)
     : fName{name}, fMass{mass}, fCharge{charge} {
   if (fMass < 0.) {
@@ -10,21 +10,21 @@ ParticleType::ParticleType(std::string const& name, double mass, int charge)
   }
 }
 
-// distruttore
+// distructor
 ParticleType::~ParticleType() {}
 
-// metodi pubblici
+// public methods
 void ParticleType::Print() const {
   std::cout << "Particle " << this->fName << "\n  Mass: " << this->fMass
             << " GeV/c^2"
             << "\n  Charge: " << this->fCharge << " e\n";
 }
 
+// get methods
 double ParticleType::GetWidth() const { return double{}; }
 
-// metodi get
-std::string const& ParticleType::GetParticleName() const { return this->fName; }
+int ParticleType::GetCharge() const { return this->fCharge; }
 
 double ParticleType::GetMass() const { return this->fMass; }
 
-int ParticleType::GetCharge() const { return this->fCharge; }
+std::string const& ParticleType::GetParticleName() const { return this->fName; }
