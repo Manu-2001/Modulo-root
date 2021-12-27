@@ -7,7 +7,7 @@ void Particle::AddParticleType(std::string const& name, double const mass,
     return;
   }
 
-  if (width == double{}) {
+  if (width == 0.) {
     fParticleType.push_back(
         std::unique_ptr<ParticleType>(new ParticleType{name, mass, charge}));
     return;
@@ -52,7 +52,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   double massDau2 = dau2.GetMass();
 
   if (this->fTypeIndex != fParticleType.size()) {
-    float x1, x2, w, y1, y2;
+    double x1, x2, w, y1, y2;
     double invnum = 1. / RAND_MAX;
 
     do {
