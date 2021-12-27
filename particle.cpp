@@ -54,8 +54,8 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
 
   if (this->fTypeIndex != fParticleType.size()) {
     float x1, x2, w, y1, y2;
-
     double invnum = 1. / RAND_MAX;
+
     do {
       x1 = 2.0 * rand() * invnum - 1.0;
       x2 = 2.0 * rand() * invnum - 1.0;
@@ -65,12 +65,11 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
     w = sqrt((-2.0 * log(w)) / w);
     y1 = x1 * w;
     y2 = x2 * w;
-
     massMot += fParticleType[this->fTypeIndex]->GetWidth() * y1;
   }
 
   if (massMot < massDau1 + massDau2) {
-    std::cerr << "Decayment cannot be preformed because mass is too low in "
+    std::cerr << "Decayment cannot be performed because mass is too low in "
                  "this channel\n";
     return 2;
   }
@@ -80,9 +79,8 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
           (massMot * massMot - (massDau1 + massDau2) * (massDau1 + massDau2)) *
           (massMot * massMot - (massDau1 - massDau2) * (massDau1 - massDau2))) /
       massMot * 0.5;
-
+      
   double norm = 2 * M_PI / RAND_MAX;
-
   double phi = rand() * norm;
   double theta = rand() * norm * 0.5 - M_PI / 2.;
 
