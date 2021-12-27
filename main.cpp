@@ -7,17 +7,14 @@
 #include "TROOT.h"
 #include "TRandom.h"
 #include "particle.hpp"
-#include "particletype.hpp"
-#include "point.hpp"
-#include "resonancetype.hpp"
+
+R__LOAD_LIBRARY(point_cpp.so);
+R__LOAD_LIBRARY(particletype_cpp.so);
+R__LOAD_LIBRARY(resonancetype_cpp.so);
+R__LOAD_LIBRARY(particle_cpp.so);
 
 int main() {
   try {
-    R__LOAD_LIBRARY(point_cpp.so);
-    R__LOAD_LIBRARY(particletype_cpp.so);
-    R__LOAD_LIBRARY(resonancetype_cpp.so);
-    R__LOAD_LIBRARY(particle_cpp.so);
-
     using iterator = std::array<Particle, 120>::iterator;
 
     // type of particle
