@@ -25,7 +25,7 @@ double Particle::Energy() const {
 
 double Particle::InvMass(Particle const& particle) const {
   return sqrt(pow(this->Energy() + particle.Energy(), 2) -
-              pow((this->fMomentum).Norm() + particle.fMomentum.Norm(), 2));
+              pow((this->fMomentum + particle.fMomentum).Norm(), 2));
 }
 
 int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
@@ -42,7 +42,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
 
     // gaussian random numbers
 
-    float x1, x2, w, y1 /*, y2 (?)*/;
+    float x1, x2, w, y1, y2;
 
     double invnum = 1. / RAND_MAX;
     do {
@@ -53,7 +53,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
 
     w = sqrt((-2.0 * log(w)) / w);
     y1 = x1 * w;
-    // y2 = x2 * w;     (?)
+    y2 = x2 * w;
 
     massMot += fParticleType[this->fTypeIndex]->GetWidth() * y1;
   }
@@ -83,16 +83,12 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   Momentum.z = pout * cos(theta);
 
   dau1.SetMomentum(Momentum);
-
-  Momentum.x = -Momentum.x;
-  Momentum.y = -Momentum.y;
-  Momentum.z = -Momentum.z;
-
-  dau2.SetMomentum(Momentum);
+  dau2.SetMomentum(-Momentum);
 
   double energy = sqrt(pow(this->fMomentum.Norm(), 2) + massMot * massMot);
 
   Point<double> b{};
+  
   b.x = this->fMomentum.x / energy;
   b.y = this->fMomentum.y / energy;
   b.z = this->fMomentum.z / energy;
