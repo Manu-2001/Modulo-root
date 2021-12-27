@@ -1,8 +1,34 @@
 #include "particle.hpp"
 
-// costruttore
+// public static methods
+void Particle::AddParticleType(std::string const& name, double const mass,
+                               int const charge, double const width) {
+  if (FindParticle(name) != fParticleType.size()) {
+    return;
+  }
+
+  if (width == double{}) {
+    fParticleType.push_back(
+        std::unique_ptr<ParticleType>(new ParticleType{name, mass, charge}));
+    return;
+  }
+
+  fParticleType.push_back(std::unique_ptr<ResonanceType>(
+      new ResonanceType{name, mass, charge, width}));
+}
+
+void Particle::PrintParticleType() {
+  for (auto const& ParticlePointer : fParticleType) {
+    std::cout << '\n';
+    ParticlePointer->Print();
+  }
+}
+
+// costructor
+Particle::Particle() : fMomentum{}, fTypeIndex{} {}
+
 Particle::Particle(std::string const& name, Point<double> const& momentum)
-    : fTypeIndex{}, fMomentum{momentum} {
+    : fMomentum{momentum}, fTypeIndex{} {
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
@@ -15,19 +41,7 @@ Particle::Particle(std::string const& name, Point<double> const& momentum)
   this->fTypeIndex = index;
 }
 
-Particle::Particle() : fTypeIndex{}, fMomentum{} {}
-
-// metodi pubblici
-double Particle::Energy() const {
-  auto const mass = fParticleType[this->fTypeIndex]->GetMass();
-  return std::hypot(mass, fMomentum.Norm());
-}
-
-double Particle::InvMass(Particle const& particle) const {
-  return sqrt(pow(this->Energy() + particle.Energy(), 2) -
-              pow((this->fMomentum + particle.fMomentum).Norm(), 2));
-}
-
+// public methods
 int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   if (this->GetMass() == 0.0) {
     std::cerr << "Decayment cannot be preformed if mass is zero\n";
@@ -76,27 +90,30 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   double phi = rand() * norm;
   double theta = rand() * norm * 0.5 - M_PI / 2.;
 
-  Point<double> Momentum{};
-
-  Momentum.x = pout * sin(theta) * cos(phi);
-  Momentum.y = pout * sin(theta) * sin(phi);
-  Momentum.z = pout * cos(theta);
+  Point<double> Momentum{pout * sin(theta) * cos(phi),
+                         pout * sin(theta) * sin(phi), pout * cos(theta)};
 
   dau1.SetMomentum(Momentum);
   dau2.SetMomentum(-Momentum);
 
   double energy = sqrt(pow(this->fMomentum.Norm(), 2) + massMot * massMot);
 
-  Point<double> b{};
-  
-  b.x = this->fMomentum.x / energy;
-  b.y = this->fMomentum.y / energy;
-  b.z = this->fMomentum.z / energy;
+  Point<double> b = this->fMomentum / energy;
 
   dau1.Boost(b);
   dau2.Boost(b);
 
   return 0;
+}
+
+double Particle::Energy() const {
+  auto const mass = fParticleType[this->fTypeIndex]->GetMass();
+  return std::hypot(mass, fMomentum.Norm());
+}
+
+double Particle::InvMass(Particle const& particle) const {
+  return sqrt(pow(this->Energy() + particle.Energy(), 2) -
+              pow((this->fMomentum + particle.fMomentum).Norm(), 2));
 }
 
 void Particle::Print() const {
@@ -106,27 +123,22 @@ void Particle::Print() const {
             << fMomentum.z << ") GeV/c\n";
 }
 
-// metodi get
-Point<double> const& Particle::GetMomentum() const { return this->fMomentum; }
-
-unsigned int Particle::GetTypeIndex() const { return this->fTypeIndex; }
+// get methods
+int Particle::GetCharge() const {
+  return fParticleType[this->fTypeIndex]->GetCharge();
+}
 
 double Particle::GetMass() const {
   return fParticleType[this->fTypeIndex]->GetMass();
 }
 
-int Particle::GetCharge() const {
-  return fParticleType[this->fTypeIndex]->GetCharge();
-}
+Point<double> const& Particle::GetMomentum() const { return this->fMomentum; }
 
-// metodi set
-void Particle::SetTypeIndex(unsigned int const typeIndex) {
-  if (typeIndex >= fParticleType.size()) {
-    throw std::runtime_error{
-        "Particle::SetTypeIndex(unsigned int) : Invalid typeIndex"};
-  }
+unsigned int Particle::GetTypeIndex() const { return this->fTypeIndex; }
 
-  this->fTypeIndex = typeIndex;
+// set methods
+void Particle::SetMomentum(Point<double> const& momentum) {
+  this->fMomentum = momentum;
 }
 
 void Particle::SetTypeIndex(std::string const& name) {
@@ -140,49 +152,29 @@ void Particle::SetTypeIndex(std::string const& name) {
   this->fTypeIndex = index;
 }
 
-void Particle::SetMomentum(Point<double> const& momentum) {
-  this->fMomentum = momentum;
+void Particle::SetTypeIndex(unsigned int const typeIndex) {
+  if (typeIndex >= fParticleType.size()) {
+    throw std::runtime_error{
+        "Particle::SetTypeIndex(unsigned int) : Invalid typeIndex"};
+  }
+
+  this->fTypeIndex = typeIndex;
 }
 
-// metodi privati
+// private static methods
 void Particle::Boost(Point<double> const& b) {
   double const energy = this->Energy();
 
   // Boost this Lorentz vector
   double b2 = b * b;
   double gamma = 1.0 / sqrt(1.0 - b2);
-  double bp = fMomentum.x * b.x + fMomentum.y * b.y + fMomentum.z * b.z;
-  double gamma2 = b2 > 0 ? (gamma - 1.0) / b2 : 0.0;
+  double bp = this->fMomentum * b;
+  double gamma2 = (b2 > 0) ? (gamma - 1.0) / b2 : 0.0;
 
-  this->fMomentum.x = b.x * (gamma2 * bp + gamma * energy);
-  this->fMomentum.y = b.y * (gamma2 * bp + gamma * energy);
-  this->fMomentum.z = b.z * (gamma2 * bp + gamma * energy);
+  this->fMomentum = b * (gamma2 * bp + gamma * energy);
 }
 
-// metodi statici
-void Particle::AddParticleType(std::string const& name, double const mass,
-                               int const charge, double const width) {
-  if (FindParticle(name) != fParticleType.size()) {
-    return;
-  }
-
-  if (width == double{}) {
-    fParticleType.push_back(
-        std::unique_ptr<ParticleType>(new ParticleType{name, mass, charge}));
-    return;
-  }
-
-  fParticleType.push_back(std::unique_ptr<ResonanceType>(
-      new ResonanceType{name, mass, charge, width}));
-}
-
-void Particle::PrintParticleType() {
-  for (auto const& ParticlePointer : fParticleType) {
-    std::cout << '\n';
-    ParticlePointer->Print();
-  }
-}
-
+// private methods
 unsigned int Particle::FindParticle(std::string const& name) {
   auto const typePosition =
       std::find_if(fParticleType.begin(), fParticleType.end(),
@@ -193,5 +185,5 @@ unsigned int Particle::FindParticle(std::string const& name) {
   return typePosition - fParticleType.begin();
 }
 
-// attributi statici
+// private static attributes
 std::vector<std::unique_ptr<ParticleType>> Particle::fParticleType{};

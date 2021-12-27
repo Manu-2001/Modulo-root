@@ -8,8 +8,8 @@
 #include <stdexcept>
 #include <vector>
 
-#include "point.hpp"
 #include "particletype.hpp"
+#include "point.hpp"
 #include "resonancetype.hpp"
 
 class Particle {
@@ -18,22 +18,22 @@ class Particle {
                               double = double{});
   static void PrintParticleType();
 
-  Particle(std::string const&, Point<double> const& = Point<double>{});
   Particle();
+  Particle(std::string const&, Point<double> const& = Point<double>{});
 
+  int Decay2body(Particle&, Particle&) const;
   double Energy() const;
   double InvMass(Particle const&) const;
-  int Decay2body(Particle &,Particle &) const;
   void Print() const;
 
+  int GetCharge() const;
+  double GetMass() const;
   Point<double> const& GetMomentum() const;
   unsigned int GetTypeIndex() const;
-  double GetMass() const;
-  int GetCharge() const;
 
-  void SetTypeIndex(unsigned int);
-  void SetTypeIndex(std::string const&);
   void SetMomentum(Point<double> const&);
+  void SetTypeIndex(std::string const&);
+  void SetTypeIndex(unsigned int);
 
  private:
   static unsigned int FindParticle(std::string const&);
@@ -44,8 +44,8 @@ class Particle {
 
   static std::vector<ParticleTypePtr> fParticleType;
 
-  unsigned int fTypeIndex;
   Point<double> fMomentum;
+  unsigned int fTypeIndex;
 };
 
 #endif
