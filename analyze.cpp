@@ -5,26 +5,13 @@
 #include "TF1.h"
 #include "TFile.h"
 #include "TH1D.h"
+#include "TLegend.h"
 #include "TROOT.h"
 #include "TStyle.h"
 
 void analyze() {
-  // canvas
-  TCanvas* RandomValueC =
-      new TCanvas("RandomValueCanvas", "Proprietà generate");
-  TCanvas* InvMassEnergyC =
-      new TCanvas("InvMassEnergyCanvas", "Energia e massa invariante");
-  TCanvas* InvSameOppC = new TCanvas(
-      "InvOppositeSameCanvas", "Massa invariante carica concorde e discorde");
-  TCanvas* InvSubCanvas =
-      new TCanvas("InvMassSubCanvas", "Invariant Mass Subtraction");
-
   // apertura file
   TFile* hFile = new TFile("histogram.root", "READ");
-
-  // funzioni
-  TF1* uniform = new TF1("Uniform", "[0]", 0., 2 * M_PI);
-  TF1* exp = new TF1("Exp", "[0] * exp([1] * x + [2]) + [3]", 0., 8.);
 
   // istogrammi da file salvato
   TH1D* particleType = (TH1D*)hFile->Get("ParticleType");
@@ -45,66 +32,75 @@ void analyze() {
   // istogrammi differenza
   TH1D* hDiffSameOppPK =
       new TH1D("DiffSameOppPK", "Pione/Kaone: Opposite Charge - Same Charge",
-               1000, 0.62, 3.2);
+               1000, 0, 5);
   TH1D* hDiffSameOppCharge = new TH1D(
-      "DiffSameOppCharge", "Opposite Charge - Same Charge", 1000, 0.225, 5);
+      "DiffSameOppCharge", "Opposite Charge - Same Charge", 1000, 0, 5);
 
   double binContent{};
   double binError{};
   double entries{};
 
-  /*  PARTE 9 */
+  double mean{};
+  double meanError{};
 
+  /*  PARTE 9 */
+  gStyle->SetOptFit(111);
+  gStyle->SetOptStat(112210);
+  // gStyle->SetOptStat(0022110);
+
+  // istogramma Tipi di particelle
   std::cout << "\n\tHistogram: ParticleType"
             << "\n  bin\t\tproportion\n";
 
   entries = particleType->GetEntries();
 
-  for (int bin{1}; bin != 8; ++bin) {
+  for (int bin = 1; bin != 8; ++bin) {
     binContent = particleType->GetBinContent(bin);
     binError = particleType->GetBinError(bin);
 
-    std::cout << "  " << bin << '\t' << binContent / entries << " +- "
+    std::cout << ' ' << bin << '\t' << binContent / entries << " ± "
               << binError / entries << '\n';
   }
 
-  std::cout << "\n\n\tHistogram: Theta\n";
+  // istogramma theta
+  theta->Fit("pol0", "Q");
+  TF1* FitTheta = theta->GetFunction("pol0");
+  FitTheta->SetLineColor(kOrange + 10);
+  FitTheta->SetLineWidth(2);
+  std::cout << "\n\n\tHistogram: Theta\n\n"
+            << " Theta fit result: y = " << FitTheta->GetParameter(0) << " ± "
+            << FitTheta->GetParError(0) << ".\n"
+            << " Chisquare/NDF: "
+            << FitTheta->GetChisquare() / FitTheta->GetNDF() << ".\n";
 
-  theta->Fit("Uniform");
+  // istogramma phi
+  phi->Fit("pol0", "Q");
+  TF1* fitPhi = phi->GetFunction("pol0");
+  fitPhi->SetLineColor(kOrange + 10);
+  fitPhi->SetLineWidth(2);
 
-  std::cout << "\nTheta fit result: y = " << uniform->GetParameter(0) << " +- "
-            << uniform->GetParError(0) << ".\n"
-            << "Chisquare/NDF: " << uniform->GetChisquare() / uniform->GetNDF()
+  std::cout << "\n\n\tHistogram: Phi\n\n"
+            << "  Phi fit result: y = " << fitPhi->GetParameter(0) << " ± "
+            << fitPhi->GetParError(0) << '\n'
+            << "  Chisquare/NDF: " << fitPhi->GetChisquare() / fitPhi->GetNDF()
             << ".\n";
 
-  std::cout << "\n\n\tHistogram: Phi\n";
-
-  phi->Fit("Uniform");
-
-  std::cout << "\nPhi fit result: y = " << uniform->GetParameter(0) << " +- "
-            << uniform->GetParError(0) << ".\n"
-            << "Chisquare/NDF: " << uniform->GetChisquare() / uniform->GetNDF()
-            << ".\n";
+  // istogramma dell'impulso
+  impulse->Fit("expo");
+  TF1* fitResultExp = impulse->GetFunction("expo");
+  fitResultExp->SetLineColor(kOrange + 10);
+  fitResultExp->SetLineWidth(2);
+  mean = 1 / (-fitResultExp->GetParameter(0));
+  meanError =
+      (fitResultExp->GetParError(1) / -(fitResultExp->GetParameter(1))) * mean;
 
   std::cout << "\n\n\tHistogram: Momentum Norm"
-            << "\n function: par[0] * exp(par[1] * x + par[2]) + par[3]\n\n";
-
-  exp->SetParameters(800E3, -1, 0, 0);
-
-  impulse->Fit("Exp");
-
-  TF1* fitResult = impulse->GetFunction("Exp");
-
-  const Double_t* par = fitResult->GetParameters();
-  const Double_t* dpar = fitResult->GetParErrors();
-
-  for (Int_t i{}; i != 4; i++) {
-    std::cout << "\n par[" << i << "] = " << par[i] << " dpar[" << i
-              << "] = " << dpar[i];
-  }
-
-  std::cout << "\n\nChisquare/NDF ="
-            << fitResult->GetChisquare() / fitResult->GetNDF() << '\n';
+            << "\n function: A * exp(B * x)\n\n"
+            << " fit mean: " << mean << " ± " << meanError << '\n'
+            << " histo mean: " << impulse->GetMean() << " ± "
+            << impulse->GetMeanError() << '\n'
+            << "\nfit Chisquare/NDF ="
+            << fitResultExp->GetChisquare() / fitResultExp->GetNDF() << '\n';
 
   /*  PARTE 10 */
 
@@ -112,23 +108,124 @@ void analyze() {
   hDiffSameOppCharge->Sumw2();
 
   (void)hDiffSameOppPK->Add(invMassOppChargePK, invMassSameChargePK, 1, -1);
-  (void)hDiffSameOppCharge->Add(invMassSameCharge, invMassOppCharge, 1, -1);
+  (void)hDiffSameOppCharge->Add(invMassOppCharge, invMassSameCharge, 1, -1);
 
   /*  PARTE 11  */
 
-  // stampa canvas
-  gStyle->SetOptStat(112210);
+  // particleType
+  particleType->GetXaxis()->SetBinLabel(1, "pion+");
+  particleType->GetXaxis()->SetBinLabel(2, "pion-");
+  particleType->GetXaxis()->SetBinLabel(3, "kaon+");
+  particleType->GetXaxis()->SetBinLabel(4, "kaon-");
+  particleType->GetXaxis()->SetBinLabel(5, "proton");
+  particleType->GetXaxis()->SetBinLabel(6, "antiproton");
+  particleType->GetXaxis()->SetBinLabel(7, "kaon*");
+  particleType->GetXaxis()->SetTitle("Types of particles");
+  particleType->GetYaxis()->SetTitle("Occurrences");
+  particleType->SetFillColor(kGreen + 1);
+  particleType->SetLineColor(kGreen + 1);
+
+  // phi distribution
+  phi->GetXaxis()->SetTitle("Phi distribution (rad)");
+  phi->GetYaxis()->SetTitle("Occurrences");
+  phi->SetLineColor(kGreen + 1);
+  phi->SetFillColor(kGreen + 1);
+
+  // theta distribution
+  theta->GetXaxis()->SetTitle("Theta distribution (rad)");
+  theta->GetYaxis()->SetTitle("Occurrences");
+  theta->SetLineColor(kGreen + 1);
+  theta->SetFillColor(kGreen + 1);
+
+  // momentum distribution
+  impulse->GetXaxis()->SetTitle("Momentum distribution (kg*m/s)");
+  impulse->GetYaxis()->SetTitle("Occurrences");
+  impulse->SetLineColor(kGreen + 1);
+  impulse->SetFillColor(kGreen + 1);
+
+  // trasversal momentum distribution
+  trasversalImpulse->GetXaxis()->SetTitle(
+      "Transverse momentum distribution kg*m/s)");
+  trasversalImpulse->GetYaxis()->SetTitle("Occurrences");
+  trasversalImpulse->SetLineColor(kGreen + 1);
+  trasversalImpulse->SetFillColor(kGreen + 1);
+
+  // energy distribution
+  energy->GetXaxis()->SetTitle("Energy distribution (J)");
+  energy->GetYaxis()->SetTitle("Occurrences");
+  energy->SetLineColor(kGreen + 1);
+  energy->SetFillColor(kGreen + 1);
+
+  // ivariant mass
+  invMass->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  invMass->GetYaxis()->SetTitle("Occurrences");
+  invMass->SetLineColor(kGreen + 1);
+  invMass->SetFillColor(kGreen + 1);
+
+  // invariant mass Same Charge
+  invMassSameCharge->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  invMassSameCharge->GetYaxis()->SetTitle("Occurrences");
+  invMassSameCharge->SetLineColor(kGreen + 1);
+  invMassSameCharge->SetFillColor(kGreen + 1);
+
+  // invariant mass Opposite Charge
+  invMassOppCharge->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  invMassOppCharge->GetYaxis()->SetTitle("Occurrences");
+  invMassOppCharge->SetLineColor(kGreen + 1);
+  invMassOppCharge->SetFillColor(kGreen + 1);
+
+  // invariant mass Same Charge Pione Kaone
+  invMassSameChargePK->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  invMassSameChargePK->GetYaxis()->SetTitle("Occurrences");
+  invMassSameChargePK->SetLineColor(kGreen + 1);
+  invMassSameChargePK->SetFillColor(kGreen + 1);
+
+  // invariant mass Opposite Charge Pione Kaone
+  invMassOppChargePK->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  invMassOppChargePK->GetYaxis()->SetTitle("Occurrences");
+  invMassOppChargePK->SetLineColor(kGreen + 1);
+  invMassOppChargePK->SetFillColor(kGreen + 1);
+
+  // invariant mass decay particle
+  invMassDecay->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  invMassDecay->GetYaxis()->SetTitle("Occurrences");
+  invMassDecay->SetLineColor(kGreen + 1);
+  invMassDecay->SetFillColor(kGreen + 1);
+
+  // histo differenza pk
+  hDiffSameOppPK->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  hDiffSameOppPK->GetYaxis()->SetTitle("Occurrences");
+  hDiffSameOppPK->SetLineColor(kGreen + 1);
+  hDiffSameOppPK->SetFillColor(kGreen + 1);
+
+  // histo differenza
+  hDiffSameOppCharge->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
+  hDiffSameOppCharge->GetYaxis()->SetTitle("Occurrences");
+  hDiffSameOppCharge->SetLineColor(kGreen + 1);
+  hDiffSameOppCharge->SetFillColor(kGreen + 1);
+
+  // canvas con angoli, impulso e distribuzione particelle
+  TCanvas* RandomValueC =
+      new TCanvas("RandomValueCanvas", "Proprietà generate");
 
   RandomValueC->Divide(2, 2);
 
   RandomValueC->cd(1);
+  TLegend* PartLegend = new TLegend(.1, .7, .3, .9, "Type of particle");
+  PartLegend->SetFillColor(0);
+  PartLegend->AddEntry(particleType, "particle type");
   particleType->DrawCopy();
+  PartLegend->Draw("SAME");
   RandomValueC->cd(2);
   theta->DrawCopy();
   RandomValueC->cd(3);
   phi->DrawCopy();
   RandomValueC->cd(4);
   impulse->DrawCopy();
+
+  // canvas con momento trasversale, energia massa invariante
+  TCanvas* InvMassEnergyC =
+      new TCanvas("InvMassEnergyCanvas", "Energia e massa invariante");
 
   InvMassEnergyC->Divide(2, 2);
 
@@ -141,16 +238,24 @@ void analyze() {
   InvMassEnergyC->cd(4);
   invMassDecay->DrawCopy();
 
+  // canvas massa invariante segno
+  TCanvas* InvSameOppC = new TCanvas(
+      "InvOppositeSameCanvas", "Massa invariante carica concorde e discorde");
+
   InvSameOppC->Divide(2, 2);
 
   InvSameOppC->cd(1);
-  invMassSameCharge->DrawCopy();
+  invMassSameCharge->DrawCopy("histo");
   InvSameOppC->cd(2);
-  invMassOppCharge->DrawCopy();
+  invMassOppCharge->DrawCopy("histo");
   InvSameOppC->cd(3);
-  invMassSameChargePK->DrawCopy();
+  invMassSameChargePK->DrawCopy("histo");
   InvSameOppC->cd(4);
-  invMassOppChargePK->DrawCopy();
+  invMassOppChargePK->DrawCopy("histo");
+
+  // canvas differenza
+  TCanvas* InvSubCanvas =
+      new TCanvas("InvMassSubCanvas", "Invariant Mass Subtraction");
 
   InvSubCanvas->Divide(2);
 
@@ -158,11 +263,6 @@ void analyze() {
   hDiffSameOppPK->DrawCopy();
   InvSubCanvas->cd(2);
   hDiffSameOppCharge->DrawCopy();
-
-  RandomValueC->Draw();
-  InvMassEnergyC->Draw();
-  InvSameOppC->Draw();
-  InvSubCanvas->Draw();
 
   RandomValueC->Print("RandomValue.pdf");
   InvMassEnergyC->Print("EnergiaInvMass.pdf");
