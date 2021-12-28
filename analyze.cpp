@@ -90,9 +90,9 @@ void analyze() {
   TF1* fitResultExp = impulse->GetFunction("expo");
   fitResultExp->SetLineColor(kOrange + 10);
   fitResultExp->SetLineWidth(2);
-  mean = 1 / (-fitResultExp->GetParameter(0));
+  mean = 1 / (-fitResultExp->GetParameter(1));
   meanError =
-      (fitResultExp->GetParError(1) / -(fitResultExp->GetParameter(1))) * mean;
+      fitResultExp->GetParError(1) / (pow(fitResultExp->GetParameter(1), 2));
 
   std::cout << "\n\n\tHistogram: Momentum Norm"
             << "\n function: A * exp(B * x)\n\n"
