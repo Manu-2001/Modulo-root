@@ -16,7 +16,7 @@ R__LOAD_LIBRARY(particle_cpp.so);
 int main() {
   try {
     /*  INITIALIZATION OF VARIABLES AND OBJECT  */
-    
+
     using iterator = std::array<Particle, 120>::iterator;
 
     // type of particle
@@ -35,18 +35,18 @@ int main() {
     TH1D* hParticleType = new TH1D("ParticleType", "Particle Types", 7, 0, 7);
     TH1D* hTheta = new TH1D("Theta", "Theta", 1000, 0., M_PI);
     TH1D* hPhi = new TH1D("Phi", "Phi", 1000, 0., 2 * M_PI);
-    TH1D* hImpulse = new TH1D("Impulse", "Momentum distribution", 1000, 0, 8);
+    TH1D* hImpulse = new TH1D("Impulse", "Momentum distribution", 1000, 0, 5);
     TH1D* hTrasversalImpulse = new TH1D(
-        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 8);
-    TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0.1, 8);
-    TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0.225, 5);
+        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 5);
+    TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0, 5);
+    TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0, 5);
     TH1D* hInvMassOppCharge =
         new TH1D("InvMassOppCharge", "Invariant Mass of opposite charge", 1000,
-                 0.225, 5);
+                 0, 5);
     TH1D* hInvMassSameCharge = new TH1D(
-        "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0.225, 5);
+        "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0, 5);
     TH1D* hInvMassDecay = new TH1D(
-        "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.62, 0.8);
+        "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, 1);
     TH1D* hInvMassOppChargePK =
         new TH1D("InvMassOppChargePK",
                  "Invariant Mass opposite charge pione/kaone", 1000, 0, 5);
@@ -213,22 +213,6 @@ int main() {
     (void)myFile->Write();
 
     myFile->Close();
-
-    // delete resources
-    delete hParticleType;
-    delete hTheta;
-    delete hPhi;
-    delete hImpulse;
-    delete hTrasversalImpulse;
-    delete hEnergy;
-    delete hInvMass;
-    delete hInvMassOppCharge;
-    delete hInvMassSameCharge;
-    delete hInvMassDecay;
-    delete hInvMassOppChargePK;
-    delete hInvMassSameChargePK;
-
-    delete myFile;
 
     /*  ERROR HANDLING, END OF PROGRAM  */
   } catch (std::exception const& Exception) {
