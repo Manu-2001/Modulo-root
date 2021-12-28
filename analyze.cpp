@@ -46,11 +46,10 @@ void analyze() {
   /*  PARTE 9 */
   gStyle->SetOptFit(111);
   gStyle->SetOptStat(112210);
-  // gStyle->SetOptStat(0022110);
 
   // istogramma Tipi di particelle
   std::cout << "\n\tHistogram: ParticleType"
-            << "\n  bin\t\tproportion\n";
+            << "\n bin\t\tproportion\n";
 
   entries = particleType->GetEntries();
 
@@ -99,8 +98,8 @@ void analyze() {
             << " fit mean: " << mean << " ± " << meanError << '\n'
             << " histo mean: " << impulse->GetMean() << " ± "
             << impulse->GetMeanError() << '\n'
-            << "\nfit Chisquare/NDF ="
-            << fitResultExp->GetChisquare() / fitResultExp->GetNDF() << '\n';
+            << "\n fit Chisquare/NDF : "
+            << fitResultExp->GetChisquare() / fitResultExp->GetNDF() << "\n\n";
 
   /*  PARTE 10 */
 
