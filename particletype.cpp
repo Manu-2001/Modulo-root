@@ -15,8 +15,8 @@ ParticleType::~ParticleType() {}
 
 // public methods
 void ParticleType::Print() const {
-  std::cout << "Particle " << this->fName << "\n  Mass: " << this->fMass
-            << " GeV/c^2"
+  std::cout << "Particle " << this->fName 
+            << "\n  Mass: " << this->fMass << " GeV/c^2"
             << "\n  Charge: " << this->fCharge << " e\n";
 }
 
