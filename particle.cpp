@@ -105,7 +105,7 @@ double Particle::Energy() const {
 
 double Particle::InvMass(Particle const& particle) const {
   return sqrt(pow(this->Energy() + particle.Energy(), 2) -
-              pow((this->fMomentum + particle.fMomentum).Norm(), 2));
+              (this->fMomentum + particle.fMomentum).Norm2());
 }
 
 void Particle::Print() const {
@@ -139,7 +139,7 @@ void Particle::SetTypeIndex(std::string const& name) {
   if (index == fParticleType.size()) {
     std::cerr
         << "Particle::SetTypeIndex(std::string&) : Particle name not found";
-        
+
     return;
   }
 

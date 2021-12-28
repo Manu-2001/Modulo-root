@@ -17,6 +17,10 @@ struct Point {
     return sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
   }
 
+  T Norm2() const {
+    return this->x * this->x + this->y * this->y + this->z * this->z;
+  }
+
   Point<T>& operator+=(Point<T> const& other) noexcept {
     this->x += other.x;
     this->y += other.y;
