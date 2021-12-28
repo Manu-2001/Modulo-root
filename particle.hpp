@@ -13,8 +13,7 @@
 
 class Particle {
  public:
-  static void AddParticleType(std::string const&, double, int,
-                              double = double{});
+  static void AddParticleType(std::string const&, double, int, double = 0.);
   static void PrintParticleType();
 
   Particle();
