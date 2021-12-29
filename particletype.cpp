@@ -15,16 +15,15 @@ ParticleType::~ParticleType() {}
 
 // public methods
 void ParticleType::Print() const {
-  std::cout << "Particle " << this->fName 
-            << "\n  Mass: " << this->fMass << " GeV/c^2"
-            << "\n  Charge: " << this->fCharge << " e\n";
+  std::cout << "Particle " << fName << "\n  Mass: " << fMass << " GeV/c^2"
+            << "\n  Charge: " << fCharge << " e\n";
 }
 
 // get methods
 double ParticleType::GetWidth() const { return double{}; }
 
-int ParticleType::GetCharge() const { return this->fCharge; }
+int ParticleType::GetCharge() const { return fCharge; }
 
-double ParticleType::GetMass() const { return this->fMass; }
+double ParticleType::GetMass() const { return fMass; }
 
-std::string const& ParticleType::GetParticleName() const { return this->fName; }
+std::string const& ParticleType::GetParticleName() const { return fName; }

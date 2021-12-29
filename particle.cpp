@@ -1,8 +1,8 @@
 #include "particle.hpp"
 
 // public static methods
-void Particle::AddParticleType(std::string const& name, double const mass,
-                               int const charge, double const width) {
+void Particle::AddParticleType(std::string const& name, double mass, int charge,
+                               double width) {
   if (FindParticle(name) != fParticleType.size()) {
     return;
   }
@@ -37,21 +37,21 @@ Particle::Particle(std::string const& name, Point<double> const& momentum)
     return;
   }
 
-  this->fTypeIndex = index;
+  fTypeIndex = index;
 }
 
 // public methods
 int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
-  if (this->GetMass() == 0.) {
+  if (GetMass() == 0.) {
     std::cerr << "Decayment cannot be preformed if mass is zero\n";
     return 1;
   }
 
-  double massMot = this->GetMass();
+  double massMot = GetMass();
   double massDau1 = dau1.GetMass();
   double massDau2 = dau2.GetMass();
 
-  if (this->fTypeIndex != fParticleType.size()) {
+  if (fTypeIndex != fParticleType.size()) {
     double x1{}, x2{}, w{}, y1{}, y2{};
     double invnum = 1. / RAND_MAX;
 
@@ -64,7 +64,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
     w = sqrt((-2.0 * log(w)) / w);
     y1 = x1 * w;
     y2 = x2 * w;
-    massMot += fParticleType[this->fTypeIndex]->GetWidth() * y1;
+    massMot += fParticleType[fTypeIndex]->GetWidth() * y1;
   }
 
   if (massMot < massDau1 + massDau2) {
@@ -89,9 +89,9 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   dau1.SetMomentum(P);
   dau2.SetMomentum(-P);
 
-  double energy = sqrt(this->fMomentum * this->fMomentum + massMot * massMot);
+  double energy = sqrt(fMomentum * fMomentum + massMot * massMot);
 
-  P = this->fMomentum / energy;
+  P = fMomentum / energy;
 
   dau1.Boost(P);
   dau2.Boost(P);
@@ -104,8 +104,8 @@ double Particle::Energy() const {
 }
 
 double Particle::InvMass(Particle const& particle) const {
-  return sqrt(pow(this->Energy() + particle.Energy(), 2) -
-              (this->fMomentum + particle.fMomentum).Norm2());
+  return sqrt(pow(Energy() + particle.Energy(), 2) -
+              (fMomentum + particle.fMomentum).Norm2());
 }
 
 void Particle::Print() const {
@@ -117,20 +117,20 @@ void Particle::Print() const {
 
 // get methods
 int Particle::GetCharge() const {
-  return fParticleType[this->fTypeIndex]->GetCharge();
+  return fParticleType[fTypeIndex]->GetCharge();
 }
 
 double Particle::GetMass() const {
-  return fParticleType[this->fTypeIndex]->GetMass();
+  return fParticleType[fTypeIndex]->GetMass();
 }
 
-Point<double> const& Particle::GetMomentum() const { return this->fMomentum; }
+Point<double> const& Particle::GetMomentum() const { return fMomentum; }
 
-unsigned int Particle::GetTypeIndex() const { return this->fTypeIndex; }
+unsigned int Particle::GetTypeIndex() const { return fTypeIndex; }
 
 // set methods
 void Particle::SetMomentum(Point<double> const& momentum) {
-  this->fMomentum = momentum;
+  fMomentum = momentum;
 }
 
 void Particle::SetTypeIndex(std::string const& name) {
@@ -143,7 +143,7 @@ void Particle::SetTypeIndex(std::string const& name) {
     return;
   }
 
-  this->fTypeIndex = index;
+  fTypeIndex = index;
 }
 
 void Particle::SetTypeIndex(unsigned int const typeIndex) {
@@ -153,17 +153,17 @@ void Particle::SetTypeIndex(unsigned int const typeIndex) {
     return;
   }
 
-  this->fTypeIndex = typeIndex;
+  fTypeIndex = typeIndex;
 }
 
 // private static methods
 void Particle::Boost(Point<double> const& b) {
-  double b2 = b * b;
+  double b2 = b.Norm2();
   double gamma = 1. / sqrt(1. - b2);
-  double bp = this->fMomentum * b;
+  double bp = fMomentum * b;
   double gamma2 = (b2 > 0.) ? (gamma - 1.) / b2 : 0.;
 
-  this->fMomentum = b * (gamma2 * bp + gamma * this->Energy());
+  fMomentum = b * (gamma2 * bp + gamma * Energy());
 }
 
 // private methods

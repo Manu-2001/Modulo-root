@@ -13,26 +13,22 @@ struct Point {
 
   Point<T>(T x_ = T{}, T y_ = T{}, T z_ = T{}) : x{x_}, y{y_}, z{z_} {}
 
-  T Norm() const {
-    return sqrt(this->x * this->x + this->y * this->y + this->z * this->z);
-  }
+  T Norm() const { return sqrt(x * x + y * y + z * z); }
 
-  T Norm2() const {
-    return this->x * this->x + this->y * this->y + this->z * this->z;
-  }
+  T Norm2() const { return x * x + y * y + z * z; }
 
   Point<T>& operator+=(Point<T> const& other) noexcept {
-    this->x += other.x;
-    this->y += other.y;
-    this->z += other.z;
+    x += other.x;
+    y += other.y;
+    z += other.z;
 
     return *this;
   }
 
   Point<T>& operator-=(Point<T> const& other) noexcept {
-    this->x -= other.x;
-    this->y -= other.y;
-    this->z -= other.z;
+    x -= other.x;
+    y -= other.y;
+    z -= other.z;
 
     return *this;
   }
@@ -45,9 +41,9 @@ struct Point {
 
     T const Tscalar{static_cast<T>(scalar)};
 
-    this->x *= Tscalar;
-    this->y *= Tscalar;
-    this->z *= Tscalar;
+    x *= Tscalar;
+    y *= Tscalar;
+    z *= Tscalar;
 
     return *this;
   }
