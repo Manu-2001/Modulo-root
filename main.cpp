@@ -170,7 +170,7 @@ int main() {
 
           (void)kaon->Decay2body(*particle, *(particle - 1));
 
-          // fill histogram invariant mass and decayed particles
+          // fill histogram invariant mass decayed particles
           (void)hInvMassDecay->Fill(particle->InvMass(*(particle - 1)));
         }
 
@@ -191,14 +191,14 @@ int main() {
           (void)hInvMass->Fill(invMass);
 
           // fill histograms of opposite/same charge
-          (next->GetCharge() * pCharge > 0.)
+          (next->GetCharge() == pCharge)
               ? (void)hInvMassSameCharge->Fill(invMass)
               : (void)hInvMassOppCharge->Fill(invMass);
 
           // fill histograms of pion/kaon opposite/same charge
           if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
               next->GetTypeIndex() < 4) {
-            (next->GetCharge() * pCharge > 0.)
+            (next->GetCharge() == pCharge)
                 ? (void)hInvMassSameChargePK->Fill(invMass)
                 : (void)hInvMassOppChargePK->Fill(invMass);
           }
