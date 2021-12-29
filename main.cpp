@@ -40,13 +40,12 @@ int main() {
         "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 5);
     TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0, 5);
     TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0, 5);
-    TH1D* hInvMassOppCharge =
-        new TH1D("InvMassOppCharge", "Invariant Mass of opposite charge", 1000,
-                 0, 5);
+    TH1D* hInvMassOppCharge = new TH1D(
+        "InvMassOppCharge", "Invariant Mass of opposite charge", 1000, 0, 5);
     TH1D* hInvMassSameCharge = new TH1D(
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0, 5);
-    TH1D* hInvMassDecay = new TH1D(
-        "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, 1);
+    TH1D* hInvMassDecay =
+        new TH1D("InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, 1);
     TH1D* hInvMassOppChargePK =
         new TH1D("InvMassOppChargePK",
                  "Invariant Mass opposite charge pione/kaone", 1000, 0, 5);
@@ -73,8 +72,8 @@ int main() {
     double phi{};
     double theta{};
     double pNorm{};
-    double result{};
     double invMass{};
+    double randomNumber{};
 
     // momentum
     Point<double> P{};
@@ -109,41 +108,41 @@ int main() {
 
         particle->SetMomentum(P);
 
-        result = gRandom->Rndm();
+        randomNumber = gRandom->Rndm();
 
         // index, fill energy and type histograms
-        if (result <= 0.4) {
+        if (randomNumber <= 0.4) {
           particle->SetTypeIndex(0);  // pion+
 
           (void)hParticleType->Fill(0);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (result <= 0.8) {
+        } else if (randomNumber <= 0.8) {
           particle->SetTypeIndex(1);  // pion-
 
           (void)hParticleType->Fill(1);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (result <= 0.85) {
+        } else if (randomNumber <= 0.85) {
           particle->SetTypeIndex(2);  // kaon+
 
           (void)hParticleType->Fill(2);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (result <= 0.9) {
+        } else if (randomNumber <= 0.9) {
           particle->SetTypeIndex(3);  // kaon-
 
           (void)hParticleType->Fill(3);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (result <= 0.945) {
+        } else if (randomNumber <= 0.945) {
           particle->SetTypeIndex(4);  //  proton
 
           (void)hParticleType->Fill(4);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (result <= 0.99) {
+        } else if (randomNumber <= 0.99) {
           particle->SetTypeIndex(5);  //  antiproton
 
           (void)hParticleType->Fill(5);
           (void)hEnergy->Fill(particle->Energy());
         } else {  //  kaone*
-          // particle and particle + 1 will be the results of the decay
+          // particle and particle + 1 will be the result of the decay
           // increment lastParticle to always generate 100 particles
           ++lastParticle;
 
@@ -157,9 +156,9 @@ int main() {
           (void)hParticleType->Fill(6);
           (void)hEnergy->Fill(kaon->Energy());
 
-          result = gRandom->Rndm();
+          randomNumber = gRandom->Rndm();
 
-          if (result < 0.5) {
+          if (randomNumber < 0.5) {
             particle->SetTypeIndex(0);  //  pion+
             ++particle;
             particle->SetTypeIndex(3);  //  kaon-
