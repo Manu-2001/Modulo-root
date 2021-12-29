@@ -52,7 +52,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   double massDau2 = dau2.GetMass();
 
   if (this->fTypeIndex != fParticleType.size()) {
-    double x1, x2, w, y1, y2;
+    double x1{}, x2{}, w{}, y1{}, y2{};
     double invnum = 1. / RAND_MAX;
 
     do {
@@ -83,18 +83,18 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   double phi = rand() * norm;
   double theta = rand() * norm * 0.5 - M_PI / 2.;
 
-  Point<double> Momentum{pout * sin(theta) * cos(phi),
-                         pout * sin(theta) * sin(phi), pout * cos(theta)};
+  Point<double> P{pout * sin(theta) * cos(phi), pout * sin(theta) * sin(phi),
+                  pout * cos(theta)};
 
-  dau1.SetMomentum(Momentum);
-  dau2.SetMomentum(-Momentum);
+  dau1.SetMomentum(P);
+  dau2.SetMomentum(-P);
 
   double energy = sqrt(this->fMomentum * this->fMomentum + massMot * massMot);
 
-  Point<double> b = this->fMomentum / energy;
+  P = this->fMomentum / energy;
 
-  dau1.Boost(b);
-  dau2.Boost(b);
+  dau1.Boost(P);
+  dau2.Boost(P);
 
   return 0;
 }
