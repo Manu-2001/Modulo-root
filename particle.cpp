@@ -89,7 +89,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
   dau1.SetMomentum(P);
   dau2.SetMomentum(-P);
 
-  double energy = sqrt(fMomentum * fMomentum + massMot * massMot);
+  double energy = sqrt(fMomentum.Norm2() + massMot * massMot);
 
   P = fMomentum / energy;
 
