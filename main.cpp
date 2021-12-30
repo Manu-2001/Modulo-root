@@ -45,7 +45,7 @@ int main() {
     TH1D* hInvMassSameCharge = new TH1D(
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0, 5);
     TH1D* hInvMassDecay =
-        new TH1D("InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, 1);
+        new TH1D("InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, .85);
     TH1D* hInvMassOppChargePK =
         new TH1D("InvMassOppChargePK",
                  "Invariant Mass opposite charge pione/kaone", 1000, 0, 5);
@@ -93,7 +93,7 @@ int main() {
     gRandom->SetSeed();
 
     // start of event generation
-    for (int event{}; event != 10E5; ++event) {
+    for (int event{}; event != 1E5; ++event) {
       lastParticle = last;
 
       // array filling
@@ -156,9 +156,7 @@ int main() {
           (void)hParticleType->Fill(6);
           (void)hEnergy->Fill(kaon->Energy());
 
-          randomNumber = gRandom->Rndm();
-
-          if (randomNumber < 0.5) {
+          if (gRandom->Rndm() < 0.5) {
             particle->SetTypeIndex(0);  //  pion+
             ++particle;
             particle->SetTypeIndex(3);  //  kaon-
