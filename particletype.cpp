@@ -20,7 +20,7 @@ void ParticleType::Print() const {
 }
 
 // get methods
-double ParticleType::GetWidth() const { return double{}; }
+double ParticleType::GetWidth() const { return 0.; }
 
 int ParticleType::GetCharge() const { return fCharge; }
 
