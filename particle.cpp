@@ -61,7 +61,7 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
       w = x1 * x1 + x2 * x2;
     } while (w >= 1.);
 
-    w = sqrt((-2.0 * log(w)) / w);
+    w = sqrt((-2. * log(w)) / w);
     y1 = x1 * w;
     y2 = x2 * w;
     massMot += fParticleType[fTypeIndex]->GetWidth() * y1;
