@@ -27,7 +27,9 @@ class Particle {
   int GetCharge() const;
   double GetMass() const;
   Point<double> const& GetMomentum() const;
+  std::string const& GetName() const;
   unsigned int GetTypeIndex() const;
+  double GetWidth() const;
 
   void SetMomentum(Point<double> const&);
   void SetTypeIndex(std::string const&);

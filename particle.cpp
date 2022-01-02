@@ -109,8 +109,7 @@ double Particle::InvMass(Particle const& particle) const {
 }
 
 void Particle::Print() const {
-  std::cout << "\nIndex: " << fTypeIndex
-            << "\n  Type: " << fParticleType[fTypeIndex]->GetParticleName()
+  std::cout << "\nIndex: " << fTypeIndex << "\n  Type: " << GetName()
             << "\n  Momentum: P(" << fMomentum.x << ", " << fMomentum.y << ", "
             << fMomentum.z << ") GeV/c\n";
 }
@@ -126,7 +125,15 @@ double Particle::GetMass() const {
 
 Point<double> const& Particle::GetMomentum() const { return fMomentum; }
 
+std::string const& Particle::GetName() const {
+  return fParticleType[fTypeIndex]->GetName();
+};
+
 unsigned int Particle::GetTypeIndex() const { return fTypeIndex; }
+
+double Particle::GetWidth() const {
+  return fParticleType[fTypeIndex]->GetWidth();
+}
 
 // set methods
 void Particle::SetMomentum(Point<double> const& momentum) {
@@ -171,7 +178,7 @@ unsigned int Particle::FindParticle(std::string const& name) {
   auto const typePosition =
       std::find_if(fParticleType.begin(), fParticleType.end(),
                    [&name](ParticleTypePtr const& pointer) {
-                     return pointer.get()->GetParticleName() == name;
+                     return pointer.get()->GetName() == name;
                    });
 
   return typePosition - fParticleType.begin();

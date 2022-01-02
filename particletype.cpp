@@ -26,4 +26,4 @@ int ParticleType::GetCharge() const { return fCharge; }
 
 double ParticleType::GetMass() const { return fMass; }
 
-std::string const& ParticleType::GetParticleName() const { return fName; }
+std::string const& ParticleType::GetName() const { return fName; }

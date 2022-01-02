@@ -44,8 +44,8 @@ int main() {
         "InvMassOppCharge", "Invariant Mass of opposite charge", 1000, 0, 5);
     TH1D* hInvMassSameCharge = new TH1D(
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0, 5);
-    TH1D* hInvMassDecay =
-        new TH1D("InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, .85);
+    TH1D* hInvMassDecay = new TH1D(
+        "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, .85);
     TH1D* hInvMassOppChargePK =
         new TH1D("InvMassOppChargePK",
                  "Invariant Mass opposite charge pione/kaone", 1000, 0, 5);
@@ -64,9 +64,10 @@ int main() {
     iterator const last = myParticleArray.end() - 20;
     iterator const kaon = myParticleArray.end() - 1;
 
-    // particle index and charge
+    // particle index charge and mass
     unsigned int pIndex{};
     int pCharge{};
+    double pMass{};
 
     // variables
     double phi{};
@@ -182,6 +183,7 @@ int main() {
       for (particle = first; particle != lastParticle; ++particle) {
         pIndex = particle->GetTypeIndex();
         pCharge = particle->GetCharge();
+        pMass = particle->GetMass();
 
         for (next = particle + 1; next != lastParticle; ++next) {
           invMass = particle->InvMass(*next);
@@ -194,7 +196,7 @@ int main() {
               : (void)hInvMassOppCharge->Fill(invMass);
 
           // fill histograms of pion/kaon opposite/same charge
-          if (particle->GetMass() != next->GetMass() && pIndex < 4 &&
+          if (pMass != next->GetMass() && pIndex < 4 &&
               next->GetTypeIndex() < 4) {
             (next->GetCharge() == pCharge)
                 ? (void)hInvMassSameChargePK->Fill(invMass)
