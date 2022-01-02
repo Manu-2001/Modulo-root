@@ -112,32 +112,32 @@ int main() {
         randomNumber = gRandom->Rndm();
 
         // index, fill energy and type histograms
-        if (randomNumber <= 0.4) {
+        if (randomNumber < 0.4) {
           particle->SetTypeIndex(0);  // pion+
 
           (void)hParticleType->Fill(0);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (randomNumber <= 0.8) {
+        } else if (randomNumber < 0.8) {
           particle->SetTypeIndex(1);  // pion-
 
           (void)hParticleType->Fill(1);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (randomNumber <= 0.85) {
+        } else if (randomNumber < 0.85) {
           particle->SetTypeIndex(2);  // kaon+
 
           (void)hParticleType->Fill(2);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (randomNumber <= 0.9) {
+        } else if (randomNumber < 0.9) {
           particle->SetTypeIndex(3);  // kaon-
 
           (void)hParticleType->Fill(3);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (randomNumber <= 0.945) {
+        } else if (randomNumber < 0.945) {
           particle->SetTypeIndex(4);  //  proton
 
           (void)hParticleType->Fill(4);
           (void)hEnergy->Fill(particle->Energy());
-        } else if (randomNumber <= 0.99) {
+        } else if (randomNumber < 0.99) {
           particle->SetTypeIndex(5);  //  antiproton
 
           (void)hParticleType->Fill(5);
