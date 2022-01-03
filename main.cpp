@@ -198,8 +198,7 @@ int main() {
               : (void)hInvMassOppCharge->Fill(invMass);
 
           // fill histograms of pion/kaon opposite/same charge
-          if (pMass != next->GetMass() && pIndex < 4 &&
-              next->GetIndex() < 4) {
+          if (pMass != next->GetMass() && pIndex < 4 && next->GetIndex() < 4) {
             (next->GetCharge() == pCharge)
                 ? (void)hInvMassSameChargePK->Fill(invMass)
                 : (void)hInvMassOppChargePK->Fill(invMass);
