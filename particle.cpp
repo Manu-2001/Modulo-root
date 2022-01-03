@@ -1,7 +1,7 @@
 #include "particle.hpp"
 
 // public static methods
-void Particle::AddParticleType(std::string const& name, double mass, int charge,
+void Particle::AddParticleType(std::string const &name, double mass, int charge,
                                double width) {
   if (FindParticle(name) != fParticleType.size()) {
     return;
@@ -18,7 +18,7 @@ void Particle::AddParticleType(std::string const& name, double mass, int charge,
 }
 
 void Particle::PrintParticleType() {
-  for (auto const& ParticlePointer : fParticleType) {
+  for (auto const &ParticlePointer : fParticleType) {
     std::cout << '\n';
     ParticlePointer->Print();
   }
@@ -27,12 +27,12 @@ void Particle::PrintParticleType() {
 // costructor
 Particle::Particle() : fTypeIndex{}, fMomentum{} {}
 
-Particle::Particle(std::string const& name, Point<double> const& momentum)
+Particle::Particle(std::string const &name, Point<double> const &momentum)
     : fTypeIndex{}, fMomentum{momentum} {
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
-    std::cerr << "\nParticle::Particle(std::string&, Point<double>&) : "
+    std::cerr << "\nParticle::Particle(std::string&, Point&) : "
                  "Particle name not found\n";
     return;
   }
@@ -40,8 +40,8 @@ Particle::Particle(std::string const& name, Point<double> const& momentum)
   fTypeIndex = index;
 }
 
-// public methods
-int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
+// public method
+int Particle::Decay2body(Particle &dau1, Particle &dau2) const {
   if (GetMass() == 0.) {
     std::cerr << "Decayment cannot be preformed if mass is zero\n";
     return 1;
@@ -100,10 +100,10 @@ int Particle::Decay2body(Particle& dau1, Particle& dau2) const {
 }
 
 double Particle::Energy() const {
-  return std::hypot(GetMass(), fMomentum.Norm());
+  return sqrt(GetMass() * GetMass() + fMomentum.Norm2());
 }
 
-double Particle::InvMass(Particle const& particle) const {
+double Particle::InvMass(Particle const &particle) const {
   return sqrt(pow(Energy() + particle.Energy(), 2) -
               (fMomentum + particle.fMomentum).Norm2());
 }
@@ -123,9 +123,9 @@ double Particle::GetMass() const {
   return fParticleType[fTypeIndex]->GetMass();
 }
 
-Point<double> const& Particle::GetMomentum() const { return fMomentum; }
+Point<double> const &Particle::GetMomentum() const { return fMomentum; }
 
-std::string const& Particle::GetName() const {
+std::string const &Particle::GetName() const {
   return fParticleType[fTypeIndex]->GetName();
 };
 
@@ -136,11 +136,11 @@ double Particle::GetWidth() const {
 }
 
 // set methods
-void Particle::SetMomentum(Point<double> const& momentum) {
+void Particle::SetMomentum(Point<double> const &momentum) {
   fMomentum = momentum;
 }
 
-void Particle::SetTypeIndex(std::string const& name) {
+void Particle::SetTypeIndex(std::string const &name) {
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
@@ -164,24 +164,24 @@ void Particle::SetTypeIndex(unsigned int const typeIndex) {
 }
 
 // private static methods
-void Particle::Boost(Point<double> const& b) {
-  double b2 = b.Norm2();
-  double gamma = 1. / sqrt(1. - b2);
-  double bp = fMomentum * b;
-  double gamma2 = (b2 > 0.) ? (gamma - 1.) / b2 : 0.;
-
-  fMomentum = b * (gamma2 * bp + gamma * Energy());
-}
-
-// private methods
-unsigned int Particle::FindParticle(std::string const& name) {
+unsigned int Particle::FindParticle(std::string const &name) {
   auto const typePosition =
       std::find_if(fParticleType.begin(), fParticleType.end(),
-                   [&name](ParticleTypePtr const& pointer) {
+                   [&name](ParticleTypePtr const &pointer) {
                      return pointer.get()->GetName() == name;
                    });
 
   return typePosition - fParticleType.begin();
+}
+
+// private method
+void Particle::Boost(Point<double> const &b) {
+  double b2 = b.Norm2();
+  double gamma = 1. / sqrt(1. - b2);
+  double bp = b * fMomentum;
+  double gamma2 = (b2 > 0) ? (gamma - 1.) / b2 : 0.;
+
+  fMomentum += b * (gamma2 * bp + gamma * Energy());
 }
 
 // private static attributes
