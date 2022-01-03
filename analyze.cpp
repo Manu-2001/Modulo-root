@@ -109,6 +109,46 @@ void analyze() {
   (void)hDiffSameOppPK->Add(invMassOppChargePK, invMassSameChargePK, 1, -1);
   (void)hDiffSameOppCharge->Add(invMassOppCharge, invMassSameCharge, 1, -1);
 
+  TF1* fGaus = new TF1("myGauss", "gaus", 0.6, 1.3);
+
+  invMassDecay->Fit("myGauss","","",0.6, 1.3);
+  TF1* DecayFit = invMassDecay->GetFunction("myGauss");
+  double const decayMean = DecayFit->GetParameter(1);
+  double const decayMeanError = DecayFit->GetParError(1);
+  double const decayStd = DecayFit->GetParameter(2);
+  double const decayStdError = DecayFit->GetParError(2);
+  double const decayChi = DecayFit->GetChisquare() / DecayFit->GetNDF();
+
+  hDiffSameOppPK->Fit("myGauss","","",0.6, 1.3);
+  TF1* PKfit = hDiffSameOppPK->GetFunction("myGauss");
+  double const PKMean = PKfit->GetParameter(1);
+  double const PKMeanError = PKfit->GetParError(1);
+  double const PKStd = PKfit->GetParameter(2);
+  double const PKStdError = PKfit->GetParError(2);
+  double const PKChi = PKfit->GetChisquare() / PKfit->GetNDF();
+
+  hDiffSameOppCharge->Fit("myGauss","","",0.6, 1.3);
+  TF1* DiffSOFit = hDiffSameOppCharge->GetFunction("myGauss");
+  double const DiffSOMean = DiffSOFit->GetParameter(1);
+  double const DiffSOMeanError = DiffSOFit->GetParError(1);
+  double const DiffSOStd = DiffSOFit->GetParameter(2);
+  double const DiffSOStdError = DiffSOFit->GetParError(2);
+  double const DiffChi = DiffSOFit->GetChisquare() / DiffSOFit->GetNDF();
+
+  std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Kaon*  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+           << "\n\nform decay particles ( Chi/NDF: " << decayChi << " )"
+           <<" \n mean: " << decayMean <<" ± " << decayMeanError
+           <<".\tstd: " << decayStd << " ± " << decayStdError
+           << "\nform difference same opposite pion/kaon charge histos"
+           << "( Chi/NDF: " << PKChi << " )"
+           <<"\n mean: " << PKMean <<" ± " << PKMeanError
+           <<".\tstd: " << PKStd << " ± " << PKStdError
+           << "\nform difference same opposite charge histos"
+           << "( Chi/NDF: " << DiffChi << " )"
+           <<"\n mean: " << DiffSOMean <<" ± " << DiffSOMeanError
+           <<".\tstd: " << DiffSOStd << " ± " << DiffSOStdError <<"\n"
+           << "                    ______________   .   ______________\n\n";
+           
   /*  PARTE 11  */
 
   // particleType
@@ -195,13 +235,11 @@ void analyze() {
   hDiffSameOppPK->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
   hDiffSameOppPK->GetYaxis()->SetTitle("Occurrences");
   hDiffSameOppPK->SetLineColor(kGreen + 1);
-  hDiffSameOppPK->SetFillColor(kGreen + 1);
 
   // histo differenza
   hDiffSameOppCharge->GetXaxis()->SetTitle("Invariant mass (GeV/c^2)");
   hDiffSameOppCharge->GetYaxis()->SetTitle("Occurrences");
   hDiffSameOppCharge->SetLineColor(kGreen + 1);
-  hDiffSameOppCharge->SetFillColor(kGreen + 1);
 
   // canvas con angoli, impulso e distribuzione particelle
   TCanvas* RandomValueC =
@@ -250,7 +288,7 @@ void analyze() {
   InvSameOppC->cd(3);
   invMassSameChargePK->DrawCopy("histo");
   InvSameOppC->cd(4);
-  invMassOppChargePK->DrawCopy("histo");
+  invMassOppChargePK->DrawCopy("histo", "E");
 
   // canvas differenza
   TCanvas* InvSubCanvas =
