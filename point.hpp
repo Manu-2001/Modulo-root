@@ -34,7 +34,7 @@ struct Point {
   }
 
   template <typename K>
-  Point<T>& operator*=(K const& scalar) noexcept {
+  Point<T>& operator*=(K scalar) noexcept {
     static_assert(
         std::is_arithmetic<K>::value,
         "Point::operator*= invalid template argument, arithmetic required");
@@ -86,7 +86,7 @@ T operator*(Point<T> const& lhs, Point<T> const& rhs) noexcept {
 }
 
 template <typename T, typename K>
-Point<T> operator*(Point<T> const& lhs, K const& scalar) noexcept {
+Point<T> operator*(Point<T> const& lhs, K scalar) noexcept {
   static_assert(
       std::is_arithmetic<K>::value,
       "Point::operator*= invalid template argument, arithmetic required");
@@ -97,7 +97,7 @@ Point<T> operator*(Point<T> const& lhs, K const& scalar) noexcept {
 }
 
 template <typename T, typename K>
-Point<T> operator/(Point<T> const& lhs, K const& scalar) noexcept {
+Point<T> operator/(Point<T> const& lhs, K scalar) noexcept {
   return lhs * (1 / scalar);
 }
 
