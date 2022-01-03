@@ -45,7 +45,7 @@ int main() {
     TH1D* hInvMassSameCharge = new TH1D(
         "InvMassSameCharge", "Invariant Mass of same charge", 1000, 0, 5);
     TH1D* hInvMassDecay = new TH1D(
-        "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.6, .85);
+        "InvMassDecay", "Invariant Mass Decay particle", 1000, 0.3, 1.5);
     TH1D* hInvMassOppChargePK =
         new TH1D("InvMassOppChargePK",
                  "Invariant Mass opposite charge pione/kaone", 1000, 0, 5);
@@ -87,8 +87,10 @@ int main() {
     hInvMassSameChargePK->Sumw2();
     hInvMassOppChargePK->Sumw2();
 
+    Particle::PrintParticleTypes();
+
     // kaone* index
-    kaon->SetTypeIndex(6);
+    kaon->SetIndex(6);
 
     // Seed
     gRandom->SetSeed();
@@ -113,32 +115,32 @@ int main() {
 
         // index, fill energy and type histograms
         if (randomNumber < 0.4) {
-          particle->SetTypeIndex(0);  // pion+
+          particle->SetIndex(0);  // pion+
 
           (void)hParticleType->Fill(0);
           (void)hEnergy->Fill(particle->Energy());
         } else if (randomNumber < 0.8) {
-          particle->SetTypeIndex(1);  // pion-
+          particle->SetIndex(1);  // pion-
 
           (void)hParticleType->Fill(1);
           (void)hEnergy->Fill(particle->Energy());
         } else if (randomNumber < 0.85) {
-          particle->SetTypeIndex(2);  // kaon+
+          particle->SetIndex(2);  // kaon+
 
           (void)hParticleType->Fill(2);
           (void)hEnergy->Fill(particle->Energy());
         } else if (randomNumber < 0.9) {
-          particle->SetTypeIndex(3);  // kaon-
+          particle->SetIndex(3);  // kaon-
 
           (void)hParticleType->Fill(3);
           (void)hEnergy->Fill(particle->Energy());
         } else if (randomNumber < 0.945) {
-          particle->SetTypeIndex(4);  //  proton
+          particle->SetIndex(4);  //  proton
 
           (void)hParticleType->Fill(4);
           (void)hEnergy->Fill(particle->Energy());
         } else if (randomNumber < 0.99) {
-          particle->SetTypeIndex(5);  //  antiproton
+          particle->SetIndex(5);  //  antiproton
 
           (void)hParticleType->Fill(5);
           (void)hEnergy->Fill(particle->Energy());
@@ -158,13 +160,13 @@ int main() {
           (void)hEnergy->Fill(kaon->Energy());
 
           if (gRandom->Rndm() < 0.5) {
-            particle->SetTypeIndex(0);  //  pion+
+            particle->SetIndex(0);  //  pion+
             ++particle;
-            particle->SetTypeIndex(3);  //  kaon-
+            particle->SetIndex(3);  //  kaon-
           } else {
-            particle->SetTypeIndex(1);  //  pion-
+            particle->SetIndex(1);  //  pion-
             ++particle;
-            particle->SetTypeIndex(2);  //  kaon+
+            particle->SetIndex(2);  //  kaon+
           }
 
           (void)kaon->Decay2body(*particle, *(particle - 1));
@@ -181,7 +183,7 @@ int main() {
       }  // end of for loop, array filling completed
 
       for (particle = first; particle != lastParticle; ++particle) {
-        pIndex = particle->GetTypeIndex();
+        pIndex = particle->GetIndex();
         pCharge = particle->GetCharge();
         pMass = particle->GetMass();
 
@@ -197,7 +199,7 @@ int main() {
 
           // fill histograms of pion/kaon opposite/same charge
           if (pMass != next->GetMass() && pIndex < 4 &&
-              next->GetTypeIndex() < 4) {
+              next->GetIndex() < 4) {
             (next->GetCharge() == pCharge)
                 ? (void)hInvMassSameChargePK->Fill(invMass)
                 : (void)hInvMassOppChargePK->Fill(invMass);

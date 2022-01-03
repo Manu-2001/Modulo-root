@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 
 #include "particletype.hpp"
@@ -15,7 +16,7 @@
 class Particle {
  public:
   static void AddParticleType(std::string const&, double, int, double = 0.);
-  static void PrintParticleType();
+  static void PrintParticleTypes();
 
   Particle();
   Particle(std::string const&, Point<double> const& = Point<double>{});
@@ -29,12 +30,12 @@ class Particle {
   double GetMass() const;
   Point<double> const& GetMomentum() const;
   std::string const& GetName() const;
-  unsigned int GetTypeIndex() const;
+  unsigned int GetIndex() const;
   double GetWidth() const;
 
   void SetMomentum(Point<double> const&);
-  void SetTypeIndex(std::string const&);
-  void SetTypeIndex(unsigned int);
+  void SetIndex(std::string const&);
+  void SetIndex(unsigned int);
 
  private:
   static unsigned int FindParticle(std::string const&);
@@ -45,7 +46,7 @@ class Particle {
 
   static std::vector<ParticleTypePtr> fParticleType;
 
-  unsigned int fTypeIndex;
+  unsigned int fIndex;
   Point<double> fMomentum;
 };
 

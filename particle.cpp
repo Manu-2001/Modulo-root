@@ -17,27 +17,29 @@ void Particle::AddParticleType(std::string const &name, double mass, int charge,
       new ResonanceType{name, mass, charge, width}));
 }
 
-void Particle::PrintParticleType() {
+void Particle::PrintParticleTypes() {
   for (auto const &ParticlePointer : fParticleType) {
-    std::cout << '\n';
+//    std::cout << '\n';
     ParticlePointer->Print();
   }
 }
 
 // costructor
-Particle::Particle() : fTypeIndex{}, fMomentum{} {}
+Particle::Particle() : fIndex{}, fMomentum{} {}
 
 Particle::Particle(std::string const &name, Point<double> const &momentum)
-    : fTypeIndex{}, fMomentum{momentum} {
+    : fIndex{}, fMomentum{momentum} {
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
-    std::cerr << "\nParticle::Particle(std::string&, Point&) : "
-                 "Particle name not found\n";
+    throw std::runtime_error{
+        "Particle::Particle(std::string&, Point<double>&) : Particle name not "
+        "found"};
+
     return;
   }
 
-  fTypeIndex = index;
+  fIndex = index;
 }
 
 // public method
@@ -51,7 +53,7 @@ int Particle::Decay2body(Particle &dau1, Particle &dau2) const {
   double massDau1 = dau1.GetMass();
   double massDau2 = dau2.GetMass();
 
-  if (fTypeIndex != fParticleType.size()) {
+  if (fIndex != fParticleType.size()) {
     double x1{}, x2{}, w{}, y1{}, y2{};
     double invnum = 1. / RAND_MAX;
 
@@ -64,7 +66,7 @@ int Particle::Decay2body(Particle &dau1, Particle &dau2) const {
     w = sqrt((-2. * log(w)) / w);
     y1 = x1 * w;
     y2 = x2 * w;
-    massMot += fParticleType[fTypeIndex]->GetWidth() * y1;
+    massMot += fParticleType[fIndex]->GetWidth() * y1;
   }
 
   if (massMot < massDau1 + massDau2) {
@@ -109,58 +111,53 @@ double Particle::InvMass(Particle const &particle) const {
 }
 
 void Particle::Print() const {
-  std::cout << "\nIndex: " << fTypeIndex << "\n  Type: " << GetName()
+  std::cout << "\nIndex: " << fIndex << "\n  Type: " << GetName()
             << "\n  Momentum: P(" << fMomentum.x << ", " << fMomentum.y << ", "
             << fMomentum.z << ") GeV/c\n";
 }
 
 // get methods
-int Particle::GetCharge() const {
-  return fParticleType[fTypeIndex]->GetCharge();
-}
+int Particle::GetCharge() const { return fParticleType[fIndex]->GetCharge(); }
 
-double Particle::GetMass() const {
-  return fParticleType[fTypeIndex]->GetMass();
-}
+double Particle::GetMass() const { return fParticleType[fIndex]->GetMass(); }
 
 Point<double> const &Particle::GetMomentum() const { return fMomentum; }
 
 std::string const &Particle::GetName() const {
-  return fParticleType[fTypeIndex]->GetName();
+  return fParticleType[fIndex]->GetName();
 };
 
-unsigned int Particle::GetTypeIndex() const { return fTypeIndex; }
+unsigned int Particle::GetIndex() const { return fIndex; }
 
-double Particle::GetWidth() const {
-  return fParticleType[fTypeIndex]->GetWidth();
-}
+double Particle::GetWidth() const { return fParticleType[fIndex]->GetWidth(); }
 
 // set methods
 void Particle::SetMomentum(Point<double> const &momentum) {
   fMomentum = momentum;
 }
 
-void Particle::SetTypeIndex(std::string const &name) {
+void Particle::SetIndex(std::string const &name) {
   auto const index = FindParticle(name);
 
   if (index == fParticleType.size()) {
-    std::cerr
-        << "Particle::SetTypeIndex(std::string&) : Particle name not found";
+    throw std::runtime_error{
+        "Particle::SetIndex(std::string&) : Particle name not found"};
 
     return;
   }
 
-  fTypeIndex = index;
+  fIndex = index;
 }
 
-void Particle::SetTypeIndex(unsigned int const typeIndex) {
+void Particle::SetIndex(unsigned int const typeIndex) {
   if (typeIndex >= fParticleType.size()) {
-    std::cerr << "Particle::SetTypeIndex(unsigned int) : Invalid typeIndex";
+    throw std::runtime_error{
+        "Particle::SetIndex(unsignd int) : Invalid typeIndex"};
 
     return;
   }
 
-  fTypeIndex = typeIndex;
+  fIndex = typeIndex;
 }
 
 // private static methods
