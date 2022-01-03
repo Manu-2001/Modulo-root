@@ -91,9 +91,9 @@ Point<T> operator*(Point<T> const& lhs, K const& scalar) noexcept {
       std::is_arithmetic<K>::value,
       "Point::operator*= invalid template argument, arithmetic required");
 
-  T const Tsclare{static_cast<T>(scalar)};
+  T const Tscalar{static_cast<T>(scalar)};
 
-  return Point<T>{lhs.x * Tsclare, lhs.y * Tsclare, lhs.z * Tsclare};
+  return Point<T>{lhs.x * Tscalar, lhs.y * Tscalar, lhs.z * Tscalar};
 }
 
 template <typename T, typename K>
