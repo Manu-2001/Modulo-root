@@ -19,7 +19,7 @@ class Particle {
   static void PrintParticleTypes();
 
   Particle();
-  Particle(std::string const&, Point<double> const& = Point<double>{});
+  Particle(std::string const&, Point<double> const& = {});
 
   int Decay2body(Particle&, Particle&) const;
   double Energy() const;
