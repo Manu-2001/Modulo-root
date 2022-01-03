@@ -19,7 +19,6 @@ void Particle::AddParticleType(std::string const &name, double mass, int charge,
 
 void Particle::PrintParticleTypes() {
   for (auto const &ParticlePointer : fParticleType) {
-//    std::cout << '\n';
     ParticlePointer->Print();
   }
 }
