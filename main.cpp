@@ -37,7 +37,7 @@ int main() {
     TH1D* hPhi = new TH1D("Phi", "Phi", 1000, 0., 2 * M_PI);
     TH1D* hImpulse = new TH1D("Impulse", "Momentum distribution", 1000, 0, 5);
     TH1D* hTrasversalImpulse = new TH1D(
-        "TrasversalImpulse", "Trasversla momentum distribution", 1000, 0, 5);
+        "TrasversalImpulse", "Trasversal momentum distribution", 1000, 0, 5);
     TH1D* hEnergy = new TH1D("Energy", "Particle energy", 1000, 0, 5);
     TH1D* hInvMass = new TH1D("InvMass", "Invariant Mass", 1000, 0, 5);
     TH1D* hInvMassOppCharge = new TH1D(

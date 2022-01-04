@@ -44,12 +44,13 @@ void analyze() {
   double meanError{};
 
   /*  PARTE 9 */
-  gStyle->SetOptFit(111);
-  gStyle->SetOptStat(112210);
+
+  gStyle->SetOptFit(111);/*
+  gStyle->SetOptStat(112210);*/
 
   // istogramma Tipi di particelle
-  std::cout << "\n\tHistogram: ParticleType"
-            << "\n bin\t\tproportion\n";
+  std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  ParticleType  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            << "\n\n bin\t\tproportion\n";
 
   entries = particleType->GetEntries();
 
@@ -61,16 +62,30 @@ void analyze() {
               << binError / entries << '\n';
   }
 
+  std::cout<< "\n\n bin\t\tentries\n";
+
+  for (int bin = 1; bin != 8; ++bin) {
+    binContent = particleType->GetBinContent(bin);
+    binError = particleType->GetBinError(bin);
+
+    std::cout << ' ' << bin << '\t' << binContent << " ± " << binError << '\n';
+  }
+  std::cout<< "\n                    ______________   .   ______________\n\n";
+
   // istogramma theta
   theta->Fit("pol0", "Q");
   TF1* FitTheta = theta->GetFunction("pol0");
   FitTheta->SetLineColor(kOrange + 10);
   FitTheta->SetLineWidth(2);
-  std::cout << "\n\n\tHistogram: Theta\n\n"
+  std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Theta  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            << "\n\n\tHistogram: Theta\n\n"
             << " Theta fit result: y = " << FitTheta->GetParameter(0) << " ± "
             << FitTheta->GetParError(0) << ".\n"
-            << " Chisquare/NDF: "
-            << FitTheta->GetChisquare() / FitTheta->GetNDF() << ".\n";
+            << " Chisquare: " << FitTheta->GetChisquare()
+            << " \n NDF: " << FitTheta->GetNDF()
+            << " \n Chisquare/NDF: "
+            << FitTheta->GetChisquare() / FitTheta->GetNDF() << ".\n"
+            << "\n                    ______________   .   ______________\n\n";
 
   // istogramma phi
   phi->Fit("pol0", "Q");
@@ -78,11 +93,14 @@ void analyze() {
   fitPhi->SetLineColor(kOrange + 10);
   fitPhi->SetLineWidth(2);
 
-  std::cout << "\n\n\tHistogram: Phi\n\n"
-            << "  Phi fit result: y = " << fitPhi->GetParameter(0) << " ± "
-            << fitPhi->GetParError(0) << '\n'
-            << "  Chisquare/NDF: " << fitPhi->GetChisquare() / fitPhi->GetNDF()
-            << ".\n";
+  std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Phi  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            << " \nPhi fit result: y = " << fitPhi->GetParameter(0) << " ± "
+            << fitPhi->GetParError(0) << ".\n"
+            << " Chisquare: " << fitPhi->GetChisquare()
+            << " \n NDF: " << fitPhi->GetNDF()
+            << " \n Chisquare/NDF: "
+            << fitPhi->GetChisquare() / fitPhi->GetNDF() << ".\n"
+            << "\n                    ______________   .   ______________\n\n";
 
   // istogramma dell'impulso
   impulse->Fit("expo");
@@ -93,13 +111,17 @@ void analyze() {
   meanError =
       fitResultExp->GetParError(1) / (pow(fitResultExp->GetParameter(1), 2));
 
-  std::cout << "\n\n\tHistogram: Momentum Norm"
+  std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Momentum  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+            << "\n\n\tHistogram: Momentum Norm"
             << "\n function: A * exp(B * x)\n\n"
             << " fit mean: " << mean << " ± " << meanError << '\n'
             << " histo mean: " << impulse->GetMean() << " ± "
             << impulse->GetMeanError() << '\n'
-            << "\n fit Chisquare/NDF : "
-            << fitResultExp->GetChisquare() / fitResultExp->GetNDF() << "\n\n";
+            << " \n\n fit\n Chisquare: " << fitResultExp->GetChisquare()
+            << " \n NDF: " << fitResultExp->GetNDF()
+            << "\n Chisquare/NDF : "
+            << fitResultExp->GetChisquare() / fitResultExp->GetNDF()
+            << "\n                    ______________   .   ______________\n\n";
 
   /*  PARTE 10 */
 
@@ -109,42 +131,51 @@ void analyze() {
   (void)hDiffSameOppPK->Add(invMassOppChargePK, invMassSameChargePK, 1, -1);
   (void)hDiffSameOppCharge->Add(invMassOppCharge, invMassSameCharge, 1, -1);
 
-  TF1* fGaus = new TF1("myGauss", "gaus", 0.6, 1.3);
+  TF1* fGaus = new TF1("myGauss", "gaus", 0.6, 1.25);
 
-  invMassDecay->Fit("myGauss","","",0.6, 1.3);
+  invMassDecay->Fit("myGauss","","",0.6, 1.25);
   TF1* DecayFit = invMassDecay->GetFunction("myGauss");
   double const decayMean = DecayFit->GetParameter(1);
   double const decayMeanError = DecayFit->GetParError(1);
   double const decayStd = DecayFit->GetParameter(2);
   double const decayStdError = DecayFit->GetParError(2);
-  double const decayChi = DecayFit->GetChisquare() / DecayFit->GetNDF();
+  double const decayChi = DecayFit->GetChisquare();
+  double const decayNDF =  DecayFit->GetNDF();
 
-  hDiffSameOppPK->Fit("myGauss","","",0.6, 1.3);
+  hDiffSameOppPK->Fit("myGauss","","",0.6, 1.25);
   TF1* PKfit = hDiffSameOppPK->GetFunction("myGauss");
   double const PKMean = PKfit->GetParameter(1);
   double const PKMeanError = PKfit->GetParError(1);
   double const PKStd = PKfit->GetParameter(2);
   double const PKStdError = PKfit->GetParError(2);
-  double const PKChi = PKfit->GetChisquare() / PKfit->GetNDF();
+  double const PKChi = PKfit->GetChisquare();
+  double const PKNDF =  PKfit->GetNDF();
 
-  hDiffSameOppCharge->Fit("myGauss","","",0.6, 1.3);
+  hDiffSameOppCharge->Fit("myGauss","","",0.6, 1.25);
   TF1* DiffSOFit = hDiffSameOppCharge->GetFunction("myGauss");
   double const DiffSOMean = DiffSOFit->GetParameter(1);
   double const DiffSOMeanError = DiffSOFit->GetParError(1);
   double const DiffSOStd = DiffSOFit->GetParameter(2);
   double const DiffSOStdError = DiffSOFit->GetParError(2);
-  double const DiffChi = DiffSOFit->GetChisquare() / DiffSOFit->GetNDF();
+  double const DiffSOSChi = DiffSOFit->GetChisquare();
+  double const DiffSOSNDF =  DiffSOFit->GetNDF();
 
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Kaon*  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-           << "\n\nform decay particles ( Chi/NDF: " << decayChi << " )"
+           << "\n\nform decay particles ( Chi/NDF: " << decayChi/decayNDF << " )"
+           << "\n chi: " << decayChi
+           << "\n NDF: " << decayNDF
            <<" \n mean: " << decayMean <<" ± " << decayMeanError
            <<".\tstd: " << decayStd << " ± " << decayStdError
            << "\nform difference same opposite pion/kaon charge histos"
-           << "( Chi/NDF: " << PKChi << " )"
+           << "( Chi/NDF: " << PKChi/PKNDF << " )"
+           << "\n chi: " << PKChi
+           << "\n NDF: " << PKNDF
            <<"\n mean: " << PKMean <<" ± " << PKMeanError
            <<".\tstd: " << PKStd << " ± " << PKStdError
            << "\nform difference same opposite charge histos"
-           << "( Chi/NDF: " << DiffChi << " )"
+           << "( Chi/NDF: " << DiffSOSChi/DiffSOSNDF << " )"
+           << "\n chi: " << DiffSOSChi
+           << "\n NDF: " << DiffSOSNDF
            <<"\n mean: " << DiffSOMean <<" ± " << DiffSOMeanError
            <<".\tstd: " << DiffSOStd << " ± " << DiffSOStdError <<"\n"
            << "                    ______________   .   ______________\n\n";
@@ -248,11 +279,7 @@ void analyze() {
   RandomValueC->Divide(2, 2);
 
   RandomValueC->cd(1);
-  TLegend* PartLegend = new TLegend(.1, .7, .3, .9, "Type of particle");
-  PartLegend->SetFillColor(0);
-  PartLegend->AddEntry(particleType, "particle type");
   particleType->DrawCopy();
-  PartLegend->Draw("SAME");
   RandomValueC->cd(2);
   theta->DrawCopy();
   RandomValueC->cd(3);
@@ -291,20 +318,27 @@ void analyze() {
   invMassOppChargePK->DrawCopy("histo", "E");
 
   // canvas differenza
-  TCanvas* InvSubCanvas =
+  TCanvas* InvKaonKanvas =
       new TCanvas("InvMassSubCanvas", "Invariant Mass Subtraction");
 
-  InvSubCanvas->Divide(2);
+  InvKaonKanvas->Divide(1, 3);
 
-  InvSubCanvas->cd(1);
-  hDiffSameOppPK->DrawCopy();
-  InvSubCanvas->cd(2);
+  InvKaonKanvas->cd(1);
+  invMassDecay->DrawCopy();
+  InvKaonKanvas->cd(2);
   hDiffSameOppCharge->DrawCopy();
+  InvKaonKanvas->cd(3);
+  hDiffSameOppPK->DrawCopy();
 
   RandomValueC->Print("RandomValue.pdf");
   InvMassEnergyC->Print("EnergiaInvMass.pdf");
   InvSameOppC->Print("InvMasSameOppoCharge.pdf");
-  InvSubCanvas->Print("InvMassSubtraction.pdf");
+  InvKaonKanvas->Print("InvMassSubtraction.pdf");
+
+  RandomValueC->Print("RandomValue.jpg");
+  InvMassEnergyC->Print("EnergiaInvMass.jpg");
+  InvSameOppC->Print("InvMasSameOppoCharge.jpg");
+  InvKaonKanvas->Print("InvMassSubtraction.jpg");
 
   hFile->Close();
 }
