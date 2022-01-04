@@ -9,6 +9,8 @@
 #include "TROOT.h"
 #include "TStyle.h"
 
+void printData(double, double, double);
+
 void analyze() {
   // apertura file
   TFile* hFile = new TFile("histogram.root", "READ");
@@ -42,6 +44,7 @@ void analyze() {
 
   double mean{};
   double meanError{};
+  double value{};
 
   /*  PARTE 9 */
 
@@ -68,7 +71,19 @@ void analyze() {
     binContent = particleType->GetBinContent(bin);
     binError = particleType->GetBinError(bin);
 
-    std::cout << ' ' << bin << '\t' << binContent << " ± " << binError << '\n';
+    if (bin == 1 || bin == 2){
+        value = 0.4E7;
+    } else if (bin == 3 || bin == 4){
+        value = 0.05E7;
+    } else if (bin == 5 || bin == 6){
+        value = 0.045E7;
+    } else {
+        value = 0.01E7;
+    }
+
+    std::cout << ' ' << bin << '\t';
+    printData(binContent, binError, value);
+    std::cout<<'\n';
   }
   std::cout<< "\n                    ______________   .   ______________\n\n";
 
@@ -78,10 +93,9 @@ void analyze() {
   FitTheta->SetLineColor(kOrange + 10);
   FitTheta->SetLineWidth(2);
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Theta  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            << "\n\n\tHistogram: Theta\n\n"
-            << " Theta fit result: y = " << FitTheta->GetParameter(0) << " ± "
-            << FitTheta->GetParError(0) << ".\n"
-            << " Chisquare: " << FitTheta->GetChisquare()
+            << "\n\n Theta fit result: y = ";
+            printData(FitTheta->GetParameter(0), FitTheta->GetParError(0), 10000);
+  std::cout<< "\n Chisquare: " << FitTheta->GetChisquare()
             << " \n NDF: " << FitTheta->GetNDF()
             << " \n Chisquare/NDF: "
             << FitTheta->GetChisquare() / FitTheta->GetNDF() << ".\n"
@@ -94,9 +108,9 @@ void analyze() {
   fitPhi->SetLineWidth(2);
 
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Phi  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            << " \nPhi fit result: y = " << fitPhi->GetParameter(0) << " ± "
-            << fitPhi->GetParError(0) << ".\n"
-            << " Chisquare: " << fitPhi->GetChisquare()
+            << " \nPhi fit result: y = ";
+            printData(fitPhi->GetParameter(0), fitPhi->GetParError(0), 10000);
+  std::cout<< "\n Chisquare: " << fitPhi->GetChisquare()
             << " \n NDF: " << fitPhi->GetNDF()
             << " \n Chisquare/NDF: "
             << fitPhi->GetChisquare() / fitPhi->GetNDF() << ".\n"
@@ -111,13 +125,13 @@ void analyze() {
   meanError =
       fitResultExp->GetParError(1) / (pow(fitResultExp->GetParameter(1), 2));
 
-  std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Momentum  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            << "\n\n\tHistogram: Momentum Norm"
+   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Momentum  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
             << "\n function: A * exp(B * x)\n\n"
-            << " fit mean: " << mean << " ± " << meanError << '\n'
-            << " histo mean: " << impulse->GetMean() << " ± "
-            << impulse->GetMeanError() << '\n'
-            << " \n\n fit\n Chisquare: " << fitResultExp->GetChisquare()
+            << " fit mean: ";
+            printData(mean, meanError, 1);
+   std::cout<< "\n histo mean: "; 
+            printData(impulse->GetMean(), impulse->GetMeanError(), 1);
+   std::cout<< "\n\n\n fit\n Chisquare: " << fitResultExp->GetChisquare()
             << " \n NDF: " << fitResultExp->GetNDF()
             << "\n Chisquare/NDF : "
             << fitResultExp->GetChisquare() / fitResultExp->GetNDF()
@@ -164,21 +178,27 @@ void analyze() {
            << "\n\nform decay particles ( Chi/NDF: " << decayChi/decayNDF << " )"
            << "\n chi: " << decayChi
            << "\n NDF: " << decayNDF
-           <<" \n mean: " << decayMean <<" ± " << decayMeanError
-           <<".\tstd: " << decayStd << " ± " << decayStdError
-           << "\nform difference same opposite pion/kaon charge histos"
+           <<" \n mean: ";
+           printData(decayMean, decayMeanError, 0.89166);
+  std::cout<<"\n std: ";
+           printData(decayStd, decayStdError, 0.050);
+  std::cout<< "\nform difference same opposite pion/kaon charge histos"
            << "( Chi/NDF: " << PKChi/PKNDF << " )"
            << "\n chi: " << PKChi
            << "\n NDF: " << PKNDF
-           <<"\n mean: " << PKMean <<" ± " << PKMeanError
-           <<".\tstd: " << PKStd << " ± " << PKStdError
-           << "\nform difference same opposite charge histos"
+           <<"\n mean: ";
+           printData(PKMean, PKMeanError, 0.89166);
+  std::cout<<"\n std: ";
+           printData(PKStd, PKStdError, 0.050);
+  std::cout<< "\nform difference same opposite charge histos" 
            << "( Chi/NDF: " << DiffSOSChi/DiffSOSNDF << " )"
            << "\n chi: " << DiffSOSChi
            << "\n NDF: " << DiffSOSNDF
-           <<"\n mean: " << DiffSOMean <<" ± " << DiffSOMeanError
-           <<".\tstd: " << DiffSOStd << " ± " << DiffSOStdError <<"\n"
-           << "                    ______________   .   ______________\n\n";
+           <<"\n mean: ";
+           printData(DiffSOMean, DiffSOMeanError, 0.89166);
+  std::cout<<"\n std: ";
+           printData(DiffSOStd, DiffSOStdError, 0.050);
+  std::cout<< "\n                    ______________   .   ______________\n\n";
            
   /*  PARTE 11  */
 
@@ -335,10 +355,14 @@ void analyze() {
   InvSameOppC->Print("InvMasSameOppoCharge.pdf");
   InvKaonKanvas->Print("InvMassSubtraction.pdf");
 
-  RandomValueC->Print("RandomValue.jpg");
-  InvMassEnergyC->Print("EnergiaInvMass.jpg");
-  InvSameOppC->Print("InvMasSameOppoCharge.jpg");
-  InvKaonKanvas->Print("InvMassSubtraction.jpg");
-
   hFile->Close();
+}
+
+void printData(double const data, double const dataError, double const value){
+  if (value >= data - dataError && value <= data + dataError){
+    std::cout<<"\033[32m" << data << " ± " << dataError << "\033[0m";
+  } else {
+    std::cout<<"\033[35m" << data << " ± " << dataError
+             <<"\tdis.: " << (value - data) / dataError << "er\033[0m";
+  }
 }
