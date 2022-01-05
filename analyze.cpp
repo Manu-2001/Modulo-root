@@ -50,7 +50,7 @@ void analyze(bool const print = false) {
 
   gStyle->SetOptFit(111);
 
-  // istogramma Tipi di particelle
+  // istogramma ParticleType
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  ParticleType  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
             << "\n\nbin\t\tproportion\n";
 
