@@ -9,9 +9,9 @@
 #include "TROOT.h"
 #include "TStyle.h"
 
-void printData(double, double, double);
+void printData(double, double, double = 0.);
 
-void analyze() {
+void analyze(bool const print = false) {
   // apertura file
   TFile* hFile = new TFile("histogram.root", "READ");
 
@@ -53,7 +53,7 @@ void analyze() {
 
   // istogramma Tipi di particelle
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  ParticleType  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            << "\n\n bin\t\tproportion\n";
+            << "\n\nbin\t\tproportion\n";
 
   entries = particleType->GetEntries();
 
@@ -61,11 +61,22 @@ void analyze() {
     binContent = particleType->GetBinContent(bin);
     binError = particleType->GetBinError(bin);
 
-    std::cout << ' ' << bin << '\t' << binContent / entries << " ± "
-              << binError / entries << '\n';
+    if (bin == 1 || bin == 2){
+        value = 0.4;
+    } else if (bin == 3 || bin == 4){
+        value = 0.05;
+    } else if (bin == 5 || bin == 6){
+        value = 0.045;
+    } else {
+        value = 0.01;
+    }
+
+    std::cout << ' ' << bin << '\t';
+    printData(binContent / entries, binError / entries, value);
+    std::cout<<'\n';
   }
 
-  std::cout<< "\n\n bin\t\tentries\n";
+  std::cout<< "\n\nbin\t\tentries\n";
 
   for (int bin = 1; bin != 8; ++bin) {
     binContent = particleType->GetBinContent(bin);
@@ -93,7 +104,7 @@ void analyze() {
   FitTheta->SetLineColor(kOrange + 10);
   FitTheta->SetLineWidth(2);
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Theta  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            << "\n\n Theta fit result: y = ";
+            << "\n\n fit result: y = ";
             printData(FitTheta->GetParameter(0), FitTheta->GetParError(0), 10000);
   std::cout<< "\n Chisquare: " << FitTheta->GetChisquare()
             << " \n NDF: " << FitTheta->GetNDF()
@@ -108,7 +119,7 @@ void analyze() {
   fitPhi->SetLineWidth(2);
 
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Phi  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            << " \nPhi fit result: y = ";
+            << "\n\n fit result: y = ";
             printData(fitPhi->GetParameter(0), fitPhi->GetParError(0), 10000);
   std::cout<< "\n Chisquare: " << fitPhi->GetChisquare()
             << " \n NDF: " << fitPhi->GetNDF()
@@ -126,7 +137,7 @@ void analyze() {
       fitResultExp->GetParError(1) / (pow(fitResultExp->GetParameter(1), 2));
 
    std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  Momentum  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-            << "\n function: A * exp(B * x)\n\n"
+            << "\n\n function: A * exp(B * x)\n\n"
             << " fit mean: ";
             printData(mean, meanError, 1);
    std::cout<< "\n histo mean: "; 
@@ -149,6 +160,8 @@ void analyze() {
 
   invMassDecay->Fit("myGauss","","",0.6, 1.25);
   TF1* DecayFit = invMassDecay->GetFunction("myGauss");
+  double const deacyAmp = DecayFit->GetParameter(0);
+  double const decayAmpError = DecayFit->GetParError(0);
   double const decayMean = DecayFit->GetParameter(1);
   double const decayMeanError = DecayFit->GetParError(1);
   double const decayStd = DecayFit->GetParameter(2);
@@ -158,6 +171,8 @@ void analyze() {
 
   hDiffSameOppPK->Fit("myGauss","","",0.6, 1.25);
   TF1* PKfit = hDiffSameOppPK->GetFunction("myGauss");
+  double const PKAmp = PKfit->GetParameter(0);
+  double const PKAmpError = PKfit->GetParError(0);
   double const PKMean = PKfit->GetParameter(1);
   double const PKMeanError = PKfit->GetParError(1);
   double const PKStd = PKfit->GetParameter(2);
@@ -167,6 +182,8 @@ void analyze() {
 
   hDiffSameOppCharge->Fit("myGauss","","",0.6, 1.25);
   TF1* DiffSOFit = hDiffSameOppCharge->GetFunction("myGauss");
+  double const DiffSOAmp = DiffSOFit->GetParameter(0);
+  double const DiffSOAmpError = DiffSOFit->GetParError(0);
   double const DiffSOMean = DiffSOFit->GetParameter(1);
   double const DiffSOMeanError = DiffSOFit->GetParError(1);
   double const DiffSOStd = DiffSOFit->GetParameter(2);
@@ -178,7 +195,9 @@ void analyze() {
            << "\n\nform decay particles ( Chi/NDF: " << decayChi/decayNDF << " )"
            << "\n chi: " << decayChi
            << "\n NDF: " << decayNDF
-           <<" \n mean: ";
+           << "\n Amplitude: ";
+           printData(deacyAmp, decayAmpError);
+  std::cout<< " \n mean: ";
            printData(decayMean, decayMeanError, 0.89166);
   std::cout<<"\n std: ";
            printData(decayStd, decayStdError, 0.050);
@@ -186,7 +205,9 @@ void analyze() {
            << "( Chi/NDF: " << PKChi/PKNDF << " )"
            << "\n chi: " << PKChi
            << "\n NDF: " << PKNDF
-           <<"\n mean: ";
+           << "\n Amplitude: ";
+           printData(PKAmp, PKAmpError);
+  std::cout<< " \n mean: ";
            printData(PKMean, PKMeanError, 0.89166);
   std::cout<<"\n std: ";
            printData(PKStd, PKStdError, 0.050);
@@ -194,7 +215,9 @@ void analyze() {
            << "( Chi/NDF: " << DiffSOSChi/DiffSOSNDF << " )"
            << "\n chi: " << DiffSOSChi
            << "\n NDF: " << DiffSOSNDF
-           <<"\n mean: ";
+           << "\n Amplitude: ";
+           printData(DiffSOAmp, DiffSOAmpError);
+  std::cout<< " \n mean: ";
            printData(DiffSOMean, DiffSOMeanError, 0.89166);
   std::cout<<"\n std: ";
            printData(DiffSOStd, DiffSOStdError, 0.050);
@@ -350,19 +373,22 @@ void analyze() {
   InvKaonKanvas->cd(3);
   hDiffSameOppPK->DrawCopy();
 
-  RandomValueC->Print("RandomValue.pdf");
-  InvMassEnergyC->Print("EnergiaInvMass.pdf");
-  InvSameOppC->Print("InvMasSameOppoCharge.pdf");
-  InvKaonKanvas->Print("InvMassSubtraction.pdf");
-
+  if (print){
+    RandomValueC->Print("RandomValue.pdf");
+    InvMassEnergyC->Print("EnergiaInvMass.pdf");
+    InvSameOppC->Print("InvMasSameOppoCharge.pdf");
+    InvKaonKanvas->Print("InvMassSubtraction.pdf");
+  }
   hFile->Close();
 }
 
-void printData(double const data, double const dataError, double const value){
-  if (value >= data - dataError && value <= data + dataError){
+void printData(double data, double dataError, double value){
+  if(value == 0.){
+    std::cout<< data << " ± " << dataError;
+  } else if (value >= data - dataError && value <= data + dataError){
     std::cout<<"\033[32m" << data << " ± " << dataError << "\033[0m";
   } else {
     std::cout<<"\033[35m" << data << " ± " << dataError
-             <<"\tdis.: " << (value - data) / dataError << "er\033[0m";
+             <<"   dis.: " << (value - data) / dataError << " error\033[0m";
   }
 }
