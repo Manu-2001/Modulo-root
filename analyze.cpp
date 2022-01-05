@@ -413,9 +413,9 @@ void analyze(bool const print = false) {
     InvSameOppC->Print("InvMasSameOppoCharge.pdf");
     InvKaonKanvas->Print("InvMassSubtraction.pdf");
   }
-  
+  /*
   hFile->Close();
-  
+  */
 }
 
 void printData(double data, double dataError, double value){

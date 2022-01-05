@@ -18,7 +18,7 @@ ResonanceType::~ResonanceType() {}
 void ResonanceType::Print() const {
   std::cout << "Resonance ";
   ParticleType::Print();
-  std::cout << "  Resonance width: " << fWidth << " Hz\n";
+  std::cout << "  Resonance width: " << fWidth << " GeV/c^2\n";
 }
 
 // get methods
