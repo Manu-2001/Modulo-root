@@ -383,7 +383,7 @@ void analyze(bool const print = false) {
 }
 
 void printData(double data, double dataError, double value){
-  if(value == 0.){
+  if (value == 0.){
     std::cout<< data << " ± " << dataError;
   } else if (value >= data - dataError && value <= data + dataError){
     std::cout<<"\033[32m" << data << " ± " << dataError << "\033[0m";
