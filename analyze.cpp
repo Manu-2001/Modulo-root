@@ -48,8 +48,7 @@ void analyze(bool const print = false) {
 
   /*  PARTE 9 */
 
-  gStyle->SetOptFit(111);/*
-  gStyle->SetOptStat(112210);*/
+  gStyle->SetOptFit(111);
 
   // istogramma Tipi di particelle
   std::cout<<"\n ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  ParticleType  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -251,20 +250,20 @@ void analyze(bool const print = false) {
   theta->SetFillColor(kGreen + 1);
 
   // momentum distribution
-  impulse->GetXaxis()->SetTitle("Momentum distribution (kg*m/s)");
+  impulse->GetXaxis()->SetTitle("Momentum distribution (Gev/c)");
   impulse->GetYaxis()->SetTitle("Occurrences");
   impulse->SetLineColor(kGreen + 1);
   impulse->SetFillColor(kGreen + 1);
 
   // trasversal momentum distribution
   trasversalImpulse->GetXaxis()->SetTitle(
-      "Transverse momentum distribution kg*m/s)");
+      "Transverse momentum distribution Gev/c)");
   trasversalImpulse->GetYaxis()->SetTitle("Occurrences");
   trasversalImpulse->SetLineColor(kGreen + 1);
   trasversalImpulse->SetFillColor(kGreen + 1);
 
   // energy distribution
-  energy->GetXaxis()->SetTitle("Energy distribution (J)");
+  energy->GetXaxis()->SetTitle("Energy distribution (GeV)");
   energy->GetYaxis()->SetTitle("Occurrences");
   energy->SetLineColor(kGreen + 1);
   energy->SetFillColor(kGreen + 1);
@@ -323,12 +322,30 @@ void analyze(bool const print = false) {
 
   RandomValueC->cd(1);
   particleType->DrawCopy();
+
   RandomValueC->cd(2);
+  TLegend* ThetaLeg = new TLegend (.1, .7, .5, .9, "Legend");
+  ThetaLeg->SetFillColor(0);
+  ThetaLeg->AddEntry(theta, "Theta distribution");
+  ThetaLeg->AddEntry(FitTheta, "Fit: y = p0");
   theta->DrawCopy();
+  ThetaLeg->Draw("SAME");
+  
   RandomValueC->cd(3);
+  TLegend* PhiLeg = new TLegend (.1, .7, .5, .9, "Legend");
+  PhiLeg->SetFillColor(0);
+  PhiLeg->AddEntry(phi, "Phi distribution");
+  PhiLeg->AddEntry(fitPhi, "Fit: y = p0");
   phi->DrawCopy();
+  ThetaLeg->Draw("SAME");
+  
   RandomValueC->cd(4);
+  TLegend* ImpLegend = new TLegend (.1, .7, .5, .9, "Legend");
+  ImpLegend->SetFillColor(0);
+  ImpLegend->AddEntry(impulse, "impulse distribution");
+  ImpLegend->AddEntry(fitResultExp, "Exponential fit");
   impulse->DrawCopy();
+  ImpLegend->Draw("SAME");
 
   // canvas con momento trasversale, energia massa invariante
   TCanvas* InvMassEnergyC =
@@ -367,11 +384,28 @@ void analyze(bool const print = false) {
   InvKaonKanvas->Divide(1, 3);
 
   InvKaonKanvas->cd(1);
+  TLegend* DecayLegend = new TLegend(.1, .7, .3, .9, "Decay K*");
+  DecayLegend->SetFillColor(0);
+  DecayLegend->AddEntry(invMassDecay,"Invariant mass decay particle");
+  DecayLegend->AddEntry(DecayFit, "Gauss fit");
   invMassDecay->DrawCopy();
+  DecayLegend->Draw("SAME");
+
   InvKaonKanvas->cd(2);
+  TLegend* DiffSOLegend = new TLegend(.1, .7, .3, .9, "Difference opposite-equal charge");
+  DiffSOLegend->SetFillColor(0);
+  DiffSOLegend->AddEntry(hDiffSameOppCharge,"Invariant mass");
+  DiffSOLegend->AddEntry(DiffSOFit, "Gauss fit");
   hDiffSameOppCharge->DrawCopy();
+  DiffSOLegend->Draw("SAME");
+
   InvKaonKanvas->cd(3);
+  TLegend* PKLegend = new TLegend(.1, .7, .3, .9, "Difference p/k charge of opposite - equale sign");
+  PKLegend->SetFillColor(0);
+  PKLegend->AddEntry(hDiffSameOppCharge,"Invariant mass");
+  PKLegend->AddEntry(DiffSOFit, "Gauss fit");
   hDiffSameOppPK->DrawCopy();
+  PKLegend->Draw("SAME");
 
   if (print){
     RandomValueC->Print("RandomValue.pdf");
@@ -379,7 +413,9 @@ void analyze(bool const print = false) {
     InvSameOppC->Print("InvMasSameOppoCharge.pdf");
     InvKaonKanvas->Print("InvMassSubtraction.pdf");
   }
+  
   hFile->Close();
+  
 }
 
 void printData(double data, double dataError, double value){
