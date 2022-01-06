@@ -1,5 +1,5 @@
-#ifndef RESOUNCETYPE_HPP
-#define RESOUNCETYPE_HPP
+#ifndef RESONANCETYPE_HPP
+#define RESONANCETYPE_HPP
 
 #include <iostream>
 #include <stdexcept>
