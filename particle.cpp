@@ -122,7 +122,7 @@ Point<double> const &Particle::GetMomentum() const { return fMomentum; }
 
 std::string const &Particle::GetName() const {
   return fParticleType[fIndex]->GetName();
-};
+}
 
 unsigned int Particle::GetIndex() const { return fIndex; }
 
